@@ -1,5 +1,6 @@
 package utils;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -30,3 +31,5 @@ public class ConfigReader {
         return Boolean.parseBoolean(props.getProperty(key));
     }
 }
+
+

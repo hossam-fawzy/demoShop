@@ -10,7 +10,7 @@ public class BaseTest {
     @BeforeMethod
     public void setUp() {
         DriverFactory.initDriver();
-        DriverFactory.getDriver().get(ConfigReader.get("baseUrl") + "/login");
+        DriverFactory.getDriver().get(ConfigReader.get("baseUrl"));
     }
 
     @AfterMethod
