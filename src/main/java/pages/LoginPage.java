@@ -1,37 +1,18 @@
 package pages;
 
 import base.BasePage;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.By;
 
 public class LoginPage extends BasePage {
 
-    // Constructor
-    public LoginPage() {
-        PageFactory.initElements(driver, this);
-    }
-
-
-    // Locators
-    @FindBy(id = "Email")
-    private WebElement emailInput;
-
-    @FindBy(id = "Password")
-    private WebElement passwordInput;
-
-    @FindBy(xpath = "//input[@value='Log in']")
-    private WebElement loginButton;
-
-    @FindBy(xpath = "//span[contains(text(),'Login was unsuccessful. Please correct the errors ')]")
-    private WebElement errorMessage;
-
-    // Locator for Logout button
-    @FindBy(xpath = "//a[normalize-space()='Log out']")
-    private WebElement logoutButton;
+    // Locators (By instead of @FindBy)
+    private By emailInput = By.id("Email");
+    private By passwordInput = By.id("Password");
+    private By loginButton = By.xpath("//input[@value='Log in']");
+    private By errorMessage = By.xpath("//span[contains(text(),'Login was unsuccessful')]");
+    private By logoutButton = By.xpath("//a[normalize-space()='Log out']");
 
     // Actions
-
     public void enterEmail(String email) {
         type(emailInput, email);
     }
@@ -49,17 +30,12 @@ public class LoginPage extends BasePage {
     }
 
     public boolean isLogoutButtonVisible() {
-        try {
-            waitForVisibility(logoutButton); // wait until it's visible
-            return logoutButton.isDisplayed();
-        } catch (Exception e) {
-            return false; // if not found or not visible
-        }
+        return isVisible(logoutButton);
     }
+
     public void login(String email, String password) {
         enterEmail(email);
         enterPassword(password);
         clickLogin();
     }
-
 }
