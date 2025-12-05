@@ -36,148 +36,135 @@ public class HomePage extends BasePage {
         super(); // Uses DriverFactory.getDriver()
     }
 
+    public String getUrl() {
+        return getCurrentUrl();
+    }
+
     // ≡ Navigation Actions
 
-    /** Navigate to Login page */
+
     public void clickLogin() {
         click(loginLink);
     }
 
-    /**
-     * Navigate to Register page
-     * ADD THIS METHOD - This is what's missing!
-     */
+
     public void clickRegister() {
         click(registerLink);
     }
 
-    /** Click Logout link */
     public void clickLogout() {
         click(logoutLink);
     }
 
-    /** Navigate to Wishlist */
     public void clickWishlist() {
         click(wishlist);
     }
 
-    /** Navigate to Shopping Cart */
+
     public void clickCart() {
         click(cartLink);
     }
 
-    /** Click on logo to return to home page */
+
     public void clickLogo() {
         click(logo);
     }
 
     // ≡ Search Actions
 
-    /**
-     * Perform a search - types text and clicks search button
-     * @param searchInput - text to search for
-     */
+
     public void search(String searchInput) {
         write(search, searchInput);
         click(searchButton);
     }
 
-    /** Enter search text without clicking search */
+
     public void enterSearchText(String searchInput) {
         write(search, searchInput);
     }
 
-    /** Click the search button */
+
     public void clickSearchButton() {
         click(searchButton);
     }
 
     // ≡ Category Navigation
 
-    /** Navigate to Books category */
+
     public void clickBooksCategory() {
         click(booksCategory);
     }
 
-    /** Navigate to Computers category */
+
     public void clickComputersCategory() {
         click(computersCategory);
     }
 
-    /** Navigate to Electronics category */
+
     public void clickElectronicsCategory() {
         click(electronicsCategory);
     }
 
-    /** Navigate to Apparel & Shoes category */
+
     public void clickApparelCategory() {
         click(apparelCategory);
     }
 
-    /** Navigate to Digital Downloads category */
+
     public void clickDigitalCategory() {
         click(digitalCategory);
     }
 
-    /** Navigate to Jewelry category */
+
     public void clickJewelryCategory() {
         click(jewelryCategory);
     }
 
-    /** Navigate to Gift Cards category */
+
     public void clickGiftCategory() {
         click(giftCategory);
     }
 
     // ≡ Verification Methods
 
-    /** Check if user is logged in by checking logout link visibility */
+
     public boolean isUserLoggedIn() {
         return isVisible(logoutLink);
     }
 
-    /** Check if user is logged out by checking login link visibility */
+
     public boolean isLoginLinkDisplayed() {
         return isVisible(loginLink);
     }
 
-    /** Check if logout link is displayed */
-    public boolean isLogoutDisplayed() {
-        return isVisible(logoutLink);
-    }
 
-    /** Check if register link is displayed */
     public boolean isRegisterLinkDisplayed() {
         return isVisible(registerLink);
     }
 
-    /** Check if logo is visible on the page */
+
     public boolean isLogoVisible() {
         return isVisible(logo);
     }
 
-    /** Check if search box is visible */
+
     public boolean isSearchBoxVisible() {
         return isVisible(search);
     }
 
-    /** Check if cart link is visible */
+
     public boolean isCartVisible() {
         return isVisible(cartLink);
     }
 
-    /** Check if wishlist is visible */
+
     public boolean isWishlistVisible() {
         return isVisible(wishlist);
     }
 
-    /** Get the current page title */
     public String getPageTitle() {
         return driver.getTitle();
     }
 
-    /** Get cart item count */
-    public String getCartItemCount() {
-        return getText(cartLink);
-    }
+
 }
