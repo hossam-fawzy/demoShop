@@ -1,50 +1,154 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="DemoWebShop Test Suite" >
+<!--
+    DemoWebShop Test Suite Configuration
+    =====================================
+    
+    BEST PRACTICES APPLIED:
+    - Organized test suites (Smoke, Regression, etc.)
+    - Parallel execution configuration
+    - Test groups for flexible execution
+    - Proper listener configuration
+    - Thread-safe execution settings
+    
+    USAGE:
+    - Run all tests: mvn test
+    - Run smoke tests only: mvn test -Dgroups=smoke
+    - Run specific suite: Configure in IDE or use profiles
+-->
 
-    <!-- Listeners for better reporting -->
+<suite name="DemoWebShop Test Suite" 
+       verbose="2" 
+       parallel="methods" 
+       thread-count="1" 
+       data-provider-thread-count="1">
+
+    <!-- Listeners for better reporting and test execution -->
     <listeners>
-        <!-- Allure Reporting -->
+        <!-- Allure Reporting - Must be first for proper integration -->
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
 
-        <!-- Custom Listeners (create these files) -->
+        <!-- Custom Test Listener for logging and screenshots -->
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
-    <!-- Smoke Test Suite -->
+    <!-- ============================================ -->
+    <!-- SMOKE TEST SUITE - Critical Path Tests -->
+    <!-- ============================================ -->
     <test name="Smoke Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
         <classes>
-<!--            <class name="tests.LoginTest"/>-->
             <class name="tests.HomeTest"/>
+            <class name="tests.LoginTest">
+                <methods>
+                    <include name="validLoginTest"/>
+                    <include name="verifyLoginPageElementsTest"/>
+                </methods>
+            </class>
         </classes>
     </test>
 
-    <!-- Regression Test Suite (commented out for quick runs) -->
-    <!--
-    <test name="Regression Tests">
+    <!-- ============================================ -->
+    <!-- REGRESSION TEST SUITE - Full Test Coverage -->
+    <!-- ============================================ -->
+    <test name="Regression Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="regression"/>
+            </run>
+        </groups>
         <classes>
             <class name="tests.LoginTest"/>
             <class name="tests.HomeTest"/>
             <class name="tests.RegistrationTest"/>
+            <class name="tests.PDPTest"/>
+            <class name="tests.CartTest"/>
             <class name="tests.CheckoutTest"/>
         </classes>
     </test>
-    -->
 
-    <!-- Test by Groups (example) -->
-    <!--
-    <test name="Critical Tests">
+    <!-- ============================================ -->
+    <!-- AUTHENTICATION TEST SUITE - Login/Registration -->
+    <!-- ============================================ -->
+    <test name="Authentication Tests" preserve-order="true">
         <groups>
             <run>
-                <include name="smoke"/>
-                <include name="critical"/>
+                <include name="authentication"/>
             </run>
         </groups>
-        <packages>
-            <package name="tests.*"/>
-        </packages>
+        <classes>
+            <class name="tests.LoginTest">
+                <methods>
+                    <include name="validLoginTest"/>
+                    <include name="invalidLoginTest"/>
+                    <include name="completeLoginLogoutFlowTest"/>
+                    <include name="rememberMeCheckboxTest"/>
+                </methods>
+            </class>
+            <class name="tests.RegistrationTest"/>
+        </classes>
     </test>
-    -->
+
+    <!-- ============================================ -->
+    <!-- NEGATIVE TEST SUITE - Error Handling -->
+    <!-- ============================================ -->
+    <test name="Negative Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="negative"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="tests.LoginTest">
+                <methods>
+                    <include name="invalidLoginTest"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+    <!-- ============================================ -->
+    <!-- UI VERIFICATION TEST SUITE -->
+    <!-- ============================================ -->
+    <test name="UI Verification Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="ui"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="tests.LoginTest">
+                <methods>
+                    <include name="verifyLoginPageElementsTest"/>
+                    <include name="rememberMeCheckboxTest"/>
+                </methods>
+            </class>
+            <class name="tests.HomeTest"/>
+        </classes>
+    </test>
+
+    <!-- ============================================ -->
+    <!-- E2E TEST SUITE - End-to-End Workflows -->
+    <!-- ============================================ -->
+    <test name="E2E Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="e2e"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="tests.LoginTest">
+                <methods>
+                    <include name="completeLoginLogoutFlowTest"/>
+                </methods>
+            </class>
+            <class name="tests.CheckoutTest"/>
+        </classes>
+    </test>
 
 </suite>

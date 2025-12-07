@@ -3,6 +3,7 @@ package tests;
 import base.BaseTest;
 import drivers.DriverFactory;
 import io.qameta.allure.*;
+import models.LoginData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -11,6 +12,10 @@ import org.testng.annotations.Test;
 import pages.HomePage;
 import pages.LoginPage;
 import utils.ConfigReader;
+import utils.JsonDataProvider;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * LoginTest - Test suite for user authentication functionality
@@ -57,6 +62,31 @@ public class LoginTest extends BaseTest {
     // ENHANCEMENT: Constants for test data (easier maintenance)
     private static final String VALID_EMAIL_KEY = "validEmail";
     private static final String VALID_PASSWORD_KEY = "validPassword";
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // HELPER METHODS
+    // ═══════════════════════════════════════════════════════════════════════════
+
+    /**
+     * Determines the expected error message based on LoginData scenario.
+     * This method maps test case scenarios to expected error messages.
+     * 
+     * @param loginData The login data object
+     * @return Expected error message string
+     */
+    private String determineExpectedError(LoginData loginData) {
+        String testCase = loginData.getTestCase().toLowerCase();
+        
+        // Map test cases to expected error messages
+        if (testCase.contains("empty") || testCase.contains("both fields")) {
+            return "Please enter your email";
+        } else if (testCase.contains("invalid email format") || testCase.contains("no @")) {
+            return "Please enter your email";
+        } else {
+            // Default error for wrong credentials, SQL injection, etc.
+            return "Login was unsuccessful";
+        }
+    }
 
     // ═══════════════════════════════════════════════════════════════════════════
     // TEST 1: Valid Login - Happy Path
@@ -141,38 +171,75 @@ public class LoginTest extends BaseTest {
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
-    // DATA PROVIDER - Invalid Login Scenarios
-    // ENHANCEMENT: More comprehensive test data with better organization
+    // DATA PROVIDER - Login Data from JSON (Best Practice: Externalized Test Data)
     // ═══════════════════════════════════════════════════════════════════════════
 
+    /**
+     * Data provider that loads LoginData from JSON file.
+     * Follows best practice of externalizing test data.
+     * 
+     * @return Object[][] array of LoginData objects for TestNG
+     */
+    @DataProvider(name = "loginDataFromJson")
+    public Object[][] loginDataFromJson() {
+        logger.debug("📊 Loading login test data from JSON...");
+        
+        try {
+            List<LoginData> loginDataList = JsonDataProvider.loadLoginData("testdata/login_data.json");
+            logger.info("✅ Loaded {} login test scenarios from JSON", loginDataList.size());
+            return JsonDataProvider.toDataProviderArray(loginDataList);
+        } catch (Exception e) {
+            logger.error("❌ Failed to load login data from JSON", e);
+            throw new RuntimeException("Failed to load login test data", e);
+        }
+    }
+
+    /**
+     * Data provider for invalid login scenarios (failure cases only).
+     * Filters JSON data to only include scenarios expecting failure.
+     * 
+     * @return Object[][] array of LoginData objects expecting failure
+     */
     @DataProvider(name = "invalidLogins")
     public Object[][] invalidLoginData() {
         logger.debug("📊 Loading invalid login test data...");
+        
+        try {
+            List<LoginData> allLoginData = JsonDataProvider.loadLoginData("testdata/login_data.json");
+            List<LoginData> invalidLogins = allLoginData.stream()
+                    .filter(LoginData::isFailureExpected)
+                    .collect(Collectors.toList());
+            
+            logger.info("✅ Loaded {} invalid login scenarios from JSON", invalidLogins.size());
+            return JsonDataProvider.toDataProviderArray(invalidLogins);
+        } catch (Exception e) {
+            logger.error("❌ Failed to load invalid login data from JSON", e);
+            throw new RuntimeException("Failed to load invalid login test data", e);
+        }
+    }
 
-        // BEST PRACTICE: Clear, descriptive test data
-        // Format: {email, password, expectedError, scenarioName}
-        return new Object[][] {
-                // Wrong Credentials Scenarios
-                {"testuser@example.com", "WrongPassword123", "Login was unsuccessful", "Wrong Password"},
-                {"wrongemail@test.com", "Password123", "Login was unsuccessful", "Non-existent Email"},
-
-                // Empty Fields Scenarios
-                {"", "", "Please enter your email", "Both Fields Empty"},
-                {"testuser@example.com", "", "Please enter your email", "Empty Password"},
-                {"", "Password123", "Please enter your email", "Empty Email"},
-
-                // Invalid Format Scenarios
-                {"invalidemail", "Pass123", "Please enter your email", "Invalid Email Format - No @"},
-                {"test@", "Pass123", "Please enter your email", "Invalid Email Format - Incomplete Domain"},
-                {"@example.com", "Pass123", "Please enter your email", "Invalid Email Format - No Local Part"},
-
-                // Special Characters Scenarios
-                {"test@example.com", "!@#$%^&*()", "Login was unsuccessful", "Special Characters Password"},
-
-                // SQL Injection Attempt (Security Testing)
-                {"' OR '1'='1", "password", "Login was unsuccessful", "SQL Injection Attempt - Email"},
-                {"test@test.com", "' OR '1'='1", "Login was unsuccessful", "SQL Injection Attempt - Password"}
-        };
+    /**
+     * Data provider for valid login scenarios (success cases only).
+     * Filters JSON data to only include scenarios expecting success.
+     * 
+     * @return Object[][] array of LoginData objects expecting success
+     */
+    @DataProvider(name = "validLogins")
+    public Object[][] validLoginData() {
+        logger.debug("📊 Loading valid login test data...");
+        
+        try {
+            List<LoginData> allLoginData = JsonDataProvider.loadLoginData("testdata/login_data.json");
+            List<LoginData> validLogins = allLoginData.stream()
+                    .filter(LoginData::isSuccessExpected)
+                    .collect(Collectors.toList());
+            
+            logger.info("✅ Loaded {} valid login scenarios from JSON", validLogins.size());
+            return JsonDataProvider.toDataProviderArray(validLogins);
+        } catch (Exception e) {
+            logger.error("❌ Failed to load valid login data from JSON", e);
+            throw new RuntimeException("Failed to load valid login test data", e);
+        }
     }
 
     // ═══════════════════════════════════════════════════════════════════════════
@@ -190,12 +257,20 @@ public class LoginTest extends BaseTest {
     @Severity(SeverityLevel.CRITICAL)
     @Story("User Login - Negative Scenarios")
     @TmsLink("TC-LOGIN-002")
-    public void invalidLoginTest(String email, String password, String expectedError, String scenarioName) {
+    public void invalidLoginTest(LoginData loginData) {
 
-        logger.info("🧪 Starting Test: Invalid Login - Scenario: {}", scenarioName);
+        logger.info("🧪 Starting Test: Invalid Login - Scenario: {}", loginData.getTestCase());
 
         // ADDED: Dynamic test name in Allure report
-        Allure.step("🔬 Testing Scenario: " + scenarioName);
+        Allure.step("🔬 Testing Scenario: " + loginData.getTestCase());
+        
+        // Extract data from LoginData model
+        String email = loginData.getEmail();
+        String password = loginData.getPassword();
+        String scenarioName = loginData.getTestCase();
+        
+        // Determine expected error message based on scenario
+        String expectedError = determineExpectedError(loginData);
 
         Allure.step("Step 1: Navigate to Login page", () -> {
             HomePage homePage = new HomePage(DriverFactory.getDriver());
@@ -207,12 +282,13 @@ public class LoginTest extends BaseTest {
             LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
 
             // BEST PRACTICE: Log test data (helps with debugging failures)
-            String displayEmail = email.isEmpty() ? "<empty>" : email;
-            String displayPassword = password.isEmpty() ? "<empty>" : "***";
+            String displayEmail = loginData.hasEmail() ? email : "<empty>";
+            String displayPassword = loginData.hasPassword() ? "***" : "<empty>";
 
-            Allure.parameter("Scenario", scenarioName);
+            Allure.parameter("Test Case", loginData.getTestCase());
             Allure.parameter("Email", displayEmail);
             Allure.parameter("Password", displayPassword);
+            Allure.parameter("Expected Result", loginData.getExpectedResult());
             Allure.parameter("Expected Error", expectedError);
 
             logger.debug("Attempting login with - Email: '{}', Password: '{}'",
