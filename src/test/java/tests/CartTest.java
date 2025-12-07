@@ -2,6 +2,7 @@ package tests;
 
 import base.BaseTest;
 import drivers.DriverFactory;
+import io.qameta.allure.*;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -9,324 +10,432 @@ import pages.CartPage;
 import pages.HomePage;
 import pages.PDPPage;
 
+@Epic("E-Commerce Platform")
+@Feature("Shopping Cart")
 public class CartTest extends BaseTest {
 
-    // URL for a book product (to add to cart before testing)
     private static final String BOOK_PRODUCT_URL = "https://demowebshop.tricentis.com/computing-and-internet";
 
     @BeforeMethod
     public void addItemToCart() {
-        // SETUP: Add an item to cart before each test
-        // This ensures we always have something in cart to test with
         DriverFactory.getDriver().get(BOOK_PRODUCT_URL);
         PDPPage pdpPage = new PDPPage(DriverFactory.getDriver());
         pdpPage.clickAddToCart();
         pdpPage.waitForNotification();
 
-        // Navigate to cart page
         DriverFactory.getDriver().get("https://demowebshop.tricentis.com/cart");
     }
 
     @Test(priority = 1, description = "Verify cart page loads and all main elements are visible")
+    @Story("Cart Page UI")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that shopping cart page loads successfully with all essential elements visible including buttons, checkboxes, and totals")
     public void verifyCartPageElementsTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: We're on cart page
-        Assert.assertTrue(cartPage.isOnCartPage(), "Should be on cart page");
+        Assert.assertTrue(cartPage.isOnCartPage(),
+                "Expected to be on cart page, but URL does not contain '/cart'");
 
-        // VERIFY: Page title is displayed
-        Assert.assertTrue(cartPage.isPageTitleDisplayed(), "Page title should be visible");
+        Assert.assertTrue(cartPage.isPageTitleDisplayed(),
+                "Page title should be visible on cart page");
 
-        // VERIFY: Page title text is correct
         String pageTitle = cartPage.getPageTitle();
-        Assert.assertEquals(pageTitle, "Shopping cart", "Page title should be 'Shopping cart'");
+        Assert.assertEquals(pageTitle, "Shopping cart",
+                "Expected page title to be 'Shopping cart', but got: " + pageTitle);
 
-        // VERIFY: All main elements are visible
-        Assert.assertTrue(cartPage.isUpdateCartButtonDisplayed(), "Update cart button should be visible");
-        Assert.assertTrue(cartPage.isContinueShoppingButtonDisplayed(), "Continue shopping button should be visible");
-        Assert.assertTrue(cartPage.isCheckoutButtonDisplayed(), "Checkout button should be visible");
-        Assert.assertTrue(cartPage.isTermsOfServiceCheckboxDisplayed(), "Terms of service checkbox should be visible");
+        Assert.assertTrue(cartPage.isUpdateCartButtonDisplayed(),
+                "Update cart button should be visible");
+        Assert.assertTrue(cartPage.isContinueShoppingButtonDisplayed(),
+                "Continue shopping button should be visible");
+        Assert.assertTrue(cartPage.isCheckoutButtonDisplayed(),
+                "Checkout button should be visible");
+        Assert.assertTrue(cartPage.isTermsOfServiceCheckboxDisplayed(),
+                "Terms of service checkbox should be visible");
     }
 
     @Test(priority = 2, description = "Verify cart is not empty after adding product")
+    @Story("Cart Content Management")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that cart contains items after adding a product and cart table is displayed correctly")
     public void verifyCartNotEmptyTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: Cart is not empty
-        Assert.assertFalse(cartPage.isCartEmpty(), "Cart should not be empty after adding product");
+        Assert.assertFalse(cartPage.isCartEmpty(),
+                "Cart should not be empty after adding product in setup");
 
-        // VERIFY: Cart table is displayed
-        Assert.assertTrue(cartPage.isCartTableDisplayed(), "Cart table should be displayed when items exist");
+        Assert.assertTrue(cartPage.isCartTableDisplayed(),
+                "Cart table should be displayed when items exist in cart");
+
+        Assert.assertTrue(cartPage.hasItemsInCart(),
+                "Cart should have items based on combined validation");
     }
 
     @Test(priority = 3, description = "Verify product information is displayed in cart")
+    @Story("Cart Product Display")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that all product information (name, price, quantity, subtotal) is displayed correctly in the cart")
     public void verifyProductInformationInCartTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // GET: Product information from cart
         String productName = cartPage.getFirstProductName();
         String productPrice = cartPage.getFirstProductPrice();
         String productQuantity = cartPage.getFirstProductQuantity();
         String productSubtotal = cartPage.getFirstProductSubtotal();
 
-        // VERIFY: Product information is not empty
-        Assert.assertFalse(productName.isEmpty(), "Product name should not be empty");
-        Assert.assertFalse(productPrice.isEmpty(), "Product price should not be empty");
-        Assert.assertFalse(productQuantity.isEmpty(), "Product quantity should not be empty");
-        Assert.assertFalse(productSubtotal.isEmpty(), "Product subtotal should not be empty");
+        Assert.assertFalse(productName.isEmpty(),
+                "Product name should not be empty in cart");
+        Assert.assertFalse(productPrice.isEmpty(),
+                "Product price should not be empty in cart");
+        Assert.assertFalse(productQuantity.isEmpty(),
+                "Product quantity should not be empty in cart");
+        Assert.assertFalse(productSubtotal.isEmpty(),
+                "Product subtotal should not be empty in cart");
 
-        // VERIFY: Product name matches what we added
-        Assert.assertEquals(productName, "Computing and Internet", "Product name should match");
+        Assert.assertEquals(productName, "Computing and Internet",
+                "Expected product name to be 'Computing and Internet', but got: " + productName);
 
-        // VERIFY: Default quantity is 1
-        Assert.assertEquals(productQuantity, "1", "Default quantity should be 1");
+        Assert.assertEquals(productQuantity, "1",
+                "Expected default quantity to be 1, but got: " + productQuantity);
 
-        System.out.println("Product Name: " + productName);
-        System.out.println("Product Price: " + productPrice);
-        System.out.println("Product Quantity: " + productQuantity);
-        System.out.println("Product Subtotal: " + productSubtotal);
+        Assert.assertTrue(cartPage.hasValidFirstProductPrice(),
+                "Product price should be in valid format");
+
+        Allure.addAttachment("Product Name", productName);
+        Allure.addAttachment("Product Price", productPrice);
+        Allure.addAttachment("Product Quantity", productQuantity);
+        Allure.addAttachment("Product Subtotal", productSubtotal);
     }
 
     @Test(priority = 4, description = "Verify cart total is displayed")
+    @Story("Cart Totals")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that cart total is displayed correctly and contains valid numeric values")
     public void verifyCartTotalDisplayedTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: Cart total is displayed
-        Assert.assertTrue(cartPage.isCartTotalDisplayed(), "Cart total should be displayed");
+        Assert.assertTrue(cartPage.isCartTotalDisplayed(),
+                "Cart total should be displayed on cart page");
 
-        // GET: Cart total value
         String cartTotal = cartPage.getCartTotal();
 
-        // VERIFY: Cart total is not empty
-        Assert.assertFalse(cartTotal.isEmpty(), "Cart total should not be empty");
+        Assert.assertFalse(cartTotal.isEmpty(),
+                "Cart total should not be empty");
 
-        // VERIFY: Cart total contains numbers
-        Assert.assertTrue(cartTotal.matches(".*\\d+.*"), "Cart total should contain numbers");
+        Assert.assertTrue(cartTotal.matches(".*\\d+.*"),
+                "Cart total should contain numbers, but got: " + cartTotal);
 
-        System.out.println("Cart Total: " + cartTotal);
+        double totalValue = cartPage.getCartTotalAsDouble();
+        Assert.assertTrue(totalValue > 0,
+                "Cart total should be greater than zero, but got: " + totalValue);
+
+        Allure.addAttachment("Cart Total", cartTotal);
     }
 
     @Test(priority = 5, description = "Verify quantity can be updated")
+    @Story("Cart Quantity Management")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that users can update product quantity in cart and changes are reflected correctly")
     public void updateQuantityTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // GET: Original quantity
         String originalQuantity = cartPage.getFirstProductQuantity();
-        Assert.assertEquals(originalQuantity, "1", "Original quantity should be 1");
+        Assert.assertEquals(originalQuantity, "1",
+                "Expected original quantity to be 1, but got: " + originalQuantity);
 
-        // PERFORM: Update quantity to 3
         cartPage.updateQuantityAndRefresh("3");
-
-        // WAIT: For page to refresh (cart page reloads after update)
         cartPage.waitForCartPageLoad();
 
-        // GET: Updated quantity
         String updatedQuantity = cartPage.getFirstProductQuantity();
 
-        // VERIFY: Quantity updated to 3
-        Assert.assertEquals(updatedQuantity, "3", "Quantity should be updated to 3");
+        Assert.assertEquals(updatedQuantity, "3",
+                "Expected quantity to be updated to 3, but got: " + updatedQuantity);
 
-        System.out.println("Original Quantity: " + originalQuantity);
-        System.out.println("Updated Quantity: " + updatedQuantity);
+        int quantityInt = cartPage.getFirstProductQuantityAsInt();
+        Assert.assertEquals(quantityInt, 3,
+                "Quantity should be 3 when parsed as integer");
+
+        Allure.addAttachment("Original Quantity", originalQuantity);
+        Allure.addAttachment("Updated Quantity", updatedQuantity);
     }
 
     @Test(priority = 6, description = "Verify subtotal updates when quantity changes")
+    @Story("Cart Calculations")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that product subtotal is recalculated correctly when quantity is changed")
     public void verifySubtotalUpdatesTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // GET: Original price and subtotal
         String originalPrice = cartPage.getFirstProductPrice();
         String originalSubtotal = cartPage.getFirstProductSubtotal();
 
-        System.out.println("Original Price: " + originalPrice);
-        System.out.println("Original Subtotal (Qty 1): " + originalSubtotal);
-
-        // PERFORM: Update quantity to 2
         cartPage.updateQuantityAndRefresh("2");
         cartPage.waitForCartPageLoad();
 
-        // GET: New subtotal
         String newSubtotal = cartPage.getFirstProductSubtotal();
 
-        System.out.println("New Subtotal (Qty 2): " + newSubtotal);
-
-        // VERIFY: Subtotal changed (should be different from original)
         Assert.assertNotEquals(newSubtotal, originalSubtotal,
-                "Subtotal should change when quantity increases");
+                "Expected subtotal to change when quantity increases. Original: " + originalSubtotal + ", New: " + newSubtotal);
 
-        // Note: We can't verify exact math because prices contain "$" and may have decimals
-        // But we verify that the subtotal did change
+        double originalSubtotalValue = Double.parseDouble(originalSubtotal.replaceAll("[^0-9.]", ""));
+        double newSubtotalValue = Double.parseDouble(newSubtotal.replaceAll("[^0-9.]", ""));
+
+        Assert.assertTrue(newSubtotalValue > originalSubtotalValue,
+                "New subtotal should be greater than original when quantity increases");
+
+        Allure.addAttachment("Original Price", originalPrice);
+        Allure.addAttachment("Original Subtotal (Qty 1)", originalSubtotal);
+        Allure.addAttachment("New Subtotal (Qty 2)", newSubtotal);
     }
 
     @Test(priority = 7, description = "Verify remove checkbox can be checked")
+    @Story("Cart Item Removal")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify that remove checkbox can be selected for products in the cart")
     public void checkRemoveCheckboxTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: Remove checkbox is initially unchecked
         Assert.assertFalse(cartPage.isFirstProductRemoveChecked(),
                 "Remove checkbox should be unchecked initially");
 
-        // PERFORM: Check the remove checkbox
         cartPage.checkRemoveFirstProduct();
 
-        // VERIFY: Remove checkbox is now checked
         Assert.assertTrue(cartPage.isFirstProductRemoveChecked(),
                 "Remove checkbox should be checked after clicking");
     }
 
     @Test(priority = 8, description = "Verify product can be removed from cart")
+    @Story("Cart Item Removal")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that users can successfully remove products from cart and cart becomes empty")
     public void removeProductFromCartTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: Cart is not empty initially
-        Assert.assertFalse(cartPage.isCartEmpty(), "Cart should have items before removal");
+        Assert.assertFalse(cartPage.isCartEmpty(),
+                "Cart should have items before removal");
+        Assert.assertTrue(cartPage.hasItemsInCart(),
+                "Cart should contain items before removal");
 
-        // PERFORM: Remove product from cart
         cartPage.removeFirstProductFromCart();
-
-        // WAIT: For page to reload
         cartPage.waitForCartPageLoad();
 
-        // VERIFY: Cart is now empty
-        Assert.assertTrue(cartPage.isCartEmpty(), "Cart should be empty after removing all items");
-
-        System.out.println("Product removed successfully - cart is now empty");
+        Assert.assertTrue(cartPage.isCartEmpty(),
+                "Cart should be empty after removing all items");
+        Assert.assertFalse(cartPage.hasItemsInCart(),
+                "Cart should not have items after removal");
     }
 
     @Test(priority = 9, description = "Verify Terms of Service checkbox can be checked")
+    @Story("Checkout Prerequisites")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that Terms of Service checkbox can be checked and unchecked as required for checkout")
     public void checkTermsOfServiceTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: Checkbox is initially unchecked
         Assert.assertFalse(cartPage.isTermsOfServiceChecked(),
                 "Terms checkbox should be unchecked initially");
 
-        // PERFORM: Check the checkbox
         cartPage.checkTermsOfService();
 
-        // VERIFY: Checkbox is now checked
         Assert.assertTrue(cartPage.isTermsOfServiceChecked(),
                 "Terms checkbox should be checked after clicking");
 
-        // PERFORM: Uncheck it
         cartPage.uncheckTermsOfService();
 
-        // VERIFY: Checkbox is unchecked again
         Assert.assertFalse(cartPage.isTermsOfServiceChecked(),
                 "Terms checkbox should be unchecked after unchecking");
+
+        Assert.assertTrue(cartPage.isTermsOfServiceEnabled(),
+                "Terms of Service checkbox should be enabled");
     }
 
     @Test(priority = 10, description = "Verify checkout button is clickable when terms are accepted")
+    @Story("Checkout Flow")
+    @Severity(SeverityLevel.BLOCKER)
+    @Description("Verify that checkout button is displayed, enabled, and clickable for proceeding to checkout")
     public void verifyCheckoutButtonClickableTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: Checkout button exists
         Assert.assertTrue(cartPage.isCheckoutButtonDisplayed(),
-                "Checkout button should be displayed");
+                "Checkout button should be displayed on cart page");
 
-        // Note: Button clickability doesn't depend on terms checkbox on this site
-        // But in real scenarios, you might need to check terms first
         Assert.assertTrue(cartPage.isCheckoutButtonClickable(),
                 "Checkout button should be clickable");
+
+        Assert.assertTrue(cartPage.isCheckoutAvailable(),
+                "Checkout should be available for proceeding");
     }
 
     @Test(priority = 11, description = "Verify Continue Shopping button works")
-    public void continueShopping () {
+    @Story("Cart Navigation")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify that Continue Shopping button navigates user away from cart page")
+    public void continueShoppingTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // PERFORM: Click Continue Shopping
         cartPage.clickContinueShopping();
 
-        // VERIFY: Navigated away from cart page
         String currentUrl = DriverFactory.getDriver().getCurrentUrl();
         Assert.assertFalse(currentUrl.contains("/cart"),
-                "Should navigate away from cart page");
+                "Expected to navigate away from cart page, but URL still contains '/cart': " + currentUrl);
 
-        System.out.println("Navigated to: " + currentUrl);
+        Allure.addAttachment("Navigated URL", currentUrl);
     }
 
     @Test(priority = 12, description = "Verify estimate shipping section is displayed")
+    @Story("Shipping Estimation")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify that shipping estimation section is visible on cart page")
     public void verifyEstimateShippingDisplayedTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: Estimate shipping section exists
         Assert.assertTrue(cartPage.isEstimateShippingDisplayed(),
-                "Estimate shipping section should be visible");
+                "Estimate shipping section should be visible on cart page");
     }
 
     @Test(priority = 13, description = "Verify all main elements method works")
+    @Story("Cart Page UI")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that bulk validation method correctly identifies when all main cart elements are visible")
     public void verifyAllMainElementsMethodTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // VERIFY: All main elements visible using single method
         Assert.assertTrue(cartPage.areAllMainElementsVisible(),
                 "All main cart page elements should be visible");
     }
 
     @Test(priority = 14, description = "Verify discount code input is displayed")
+    @Story("Cart Discounts")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify that discount code input field is functional and accepts user input")
     public void verifyDiscountCodeInputTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // PERFORM: Try entering a discount code (won't be valid, just testing UI)
+        Assert.assertTrue(cartPage.isDiscountCodeInputDisplayed(),
+                "Discount code input field should be displayed");
+
         cartPage.enterDiscountCode("TEST123");
 
-        System.out.println("Discount code input works (entered TEST123)");
-
-        // Note: We can't verify if discount was applied without a real code
-        // This test just verifies the input field works
+        Allure.addAttachment("Test Discount Code", "TEST123");
     }
 
     @Test(priority = 15, description = "Verify gift card code input is displayed")
+    @Story("Cart Gift Cards")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify that gift card code input field is functional and accepts user input")
     public void verifyGiftCardInputTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // PERFORM: Try entering a gift card code (won't be valid, just testing UI)
+        Assert.assertTrue(cartPage.isGiftCardInputDisplayed(),
+                "Gift card input field should be displayed");
+
         cartPage.enterGiftCardCode("GIFT123");
 
-        System.out.println("Gift card input works (entered GIFT123)");
-
-        // Note: We can't verify if gift card was applied without a real code
-        // This test just verifies the input field works
+        Allure.addAttachment("Test Gift Card Code", "GIFT123");
     }
 
     @Test(priority = 16, description = "Verify zip code can be entered for shipping estimate")
+    @Story("Shipping Estimation")
+    @Severity(SeverityLevel.MINOR)
+    @Description("Verify that zip code input field accepts user input for shipping estimation")
     public void enterZipCodeTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // PERFORM: Enter zip code
-        cartPage.enterZipCode("12345");
+        String testZipCode = "12345";
+        cartPage.enterZipCode(testZipCode);
 
-        System.out.println("Zip code entered successfully");
-
-        // Note: We're not clicking estimate shipping button as it might cause errors
-        // without selecting country/state. This test just verifies input works.
+        Allure.addAttachment("Test Zip Code", testZipCode);
     }
 
     @Test(priority = 17, description = "Verify updating quantity to zero removes item")
+    @Story("Cart Item Removal")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that setting product quantity to zero effectively removes the item from cart")
     public void updateQuantityToZeroTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // PERFORM: Set quantity to 0
-        cartPage.updateQuantityAndRefresh("0");
+        Assert.assertTrue(cartPage.hasItemsInCart(),
+                "Cart should have items before setting quantity to zero");
 
-        // WAIT: For page reload
+        cartPage.updateQuantityAndRefresh("0");
         cartPage.waitForCartPageLoad();
 
-        // VERIFY: Cart should be empty (quantity 0 = remove item)
         Assert.assertTrue(cartPage.isCartEmpty(),
                 "Cart should be empty after setting quantity to 0");
     }
 
     @Test(priority = 18, description = "Verify page URL is correct")
+    @Story("Cart Page UI")
+    @Severity(SeverityLevel.MINOR)
+    @Description("Verify that cart page URL is correct and contains expected path")
     public void verifyCartPageUrlTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        // GET: Current URL
         String pageUrl = cartPage.getPageUrl();
 
-        // VERIFY: URL contains /cart
-        Assert.assertTrue(pageUrl.contains("/cart"), "URL should contain '/cart'");
+        Assert.assertTrue(pageUrl.contains("/cart"),
+                "Expected URL to contain '/cart', but got: " + pageUrl);
 
-        System.out.println("Cart Page URL: " + pageUrl);
+        Allure.addAttachment("Cart Page URL", pageUrl);
+    }
+
+    @Test(priority = 19, description = "Verify subtotal calculation is mathematically correct")
+    @Story("Cart Calculations")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that subtotal is calculated correctly as price × quantity")
+    public void verifySubtotalCalculationTest() {
+        CartPage cartPage = new CartPage(DriverFactory.getDriver());
+
+        boolean isCalculationCorrect = cartPage.isSubtotalCalculationCorrect();
+
+        Assert.assertTrue(isCalculationCorrect,
+                "Subtotal calculation (price × quantity) should be mathematically correct");
+
+        String price = cartPage.getFirstProductPrice();
+        String quantity = cartPage.getFirstProductQuantity();
+        String subtotal = cartPage.getFirstProductSubtotal();
+
+        Allure.addAttachment("Unit Price", price);
+        Allure.addAttachment("Quantity", quantity);
+        Allure.addAttachment("Calculated Subtotal", subtotal);
+    }
+
+    @Test(priority = 20, description = "Verify product exists in cart by name")
+    @Story("Cart Product Verification")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify that specific product can be found in cart by name")
+    public void verifyProductExistsInCartTest() {
+        CartPage cartPage = new CartPage(DriverFactory.getDriver());
+
+        String expectedProductName = "Computing and Internet";
+        boolean productExists = cartPage.isProductInCart(expectedProductName);
+
+        Assert.assertTrue(productExists,
+                "Expected product '" + expectedProductName + "' should exist in cart");
+    }
+
+    @Test(priority = 21, description = "Verify all cart functionalities are available")
+    @Story("Cart Page UI")
+    @Severity(SeverityLevel.NORMAL)
+    @Description("Verify that all cart functionality elements (update, checkout, discounts, gift cards) are present")
+    public void verifyAllCartFunctionalitiesTest() {
+        CartPage cartPage = new CartPage(DriverFactory.getDriver());
+
+        Assert.assertTrue(cartPage.areAllCartFunctionalitiesAvailable(),
+                "All cart functionality elements should be available on the page");
+    }
+
+    @Test(priority = 22, description = "Verify cart page loads completely")
+    @Story("Cart Page UI")
+    @Severity(SeverityLevel.CRITICAL)
+    @Description("Verify that cart page waits for all elements to load before allowing user interaction")
+    public void verifyCartPageLoadTest() {
+        CartPage cartPage = new CartPage(DriverFactory.getDriver());
+
+        cartPage.waitForPageToLoad();
+
+        Assert.assertTrue(cartPage.isPageTitleDisplayed(),
+                "Page title should be loaded and visible");
+        Assert.assertTrue(cartPage.isCheckoutButtonDisplayed(),
+                "Checkout button should be loaded and visible");
     }
 }
