@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import utils.WaitUtils;
 
 public class CartPage extends BasePage {
 
@@ -318,7 +319,7 @@ public class CartPage extends BasePage {
 
     @Step("Wait for cart page to load completely")
     public boolean waitForCartPageLoad() {
-        return waitForVisibility(pageTitle, 10);
+        return  WaitUtils.waitForVisibility(driver,pageTitle, 10) != null ;
     }
 
     @Step("Scroll to checkout button")
@@ -335,8 +336,8 @@ public class CartPage extends BasePage {
 
     @Step("Wait for cart page to be fully loaded with explicit wait")
     public void waitForPageToLoad() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(pageTitle));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(checkoutButton));
+         WaitUtils.waitForVisibility(driver,pageTitle,10);
+         WaitUtils.waitForVisibility(driver,checkoutButton,10);
     }
 
     @Step("Get first product quantity as integer")
@@ -476,11 +477,11 @@ public class CartPage extends BasePage {
 
     @Step("Wait for update success message to appear")
     public boolean waitForUpdateSuccessMessage() {
-        return waitForVisibility(updateSuccessMessage, 5);
+        return  WaitUtils.waitForVisibility(driver, updateSuccessMessage, 5) !=null;
     }
 
     @Step("Wait for error message to appear")
     public boolean waitForErrorMessage() {
-        return waitForVisibility(errorMessage, 5);
+        return  WaitUtils.waitForVisibility(driver, errorMessage, 5) !=null;
     }
 }

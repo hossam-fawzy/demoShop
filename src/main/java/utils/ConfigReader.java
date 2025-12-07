@@ -18,7 +18,7 @@ import java.util.Properties;
 public class ConfigReader {
     private static final Logger logger = LogManager.getLogger(ConfigReader.class);
     private static Properties props = new Properties();
-    private static final String CONFIG_FILE = "config.properties";
+    private static final String CONFIG_FILE = "config/config.properties";
 
     static {
         loadProperties();

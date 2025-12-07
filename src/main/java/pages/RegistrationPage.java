@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import utils.WaitUtils;
 
 public class RegistrationPage extends BasePage {
 
@@ -114,7 +115,7 @@ public class RegistrationPage extends BasePage {
     @Step("Verify registration is successful")
     public boolean isRegistrationSuccessful() {
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(successMessage));
+            WaitUtils.waitForVisibility(driver, successMessage,10);
             return isVisible(successMessage);
         } catch (Exception e) {
             return false;
@@ -218,7 +219,7 @@ public class RegistrationPage extends BasePage {
 
     @Step("Wait for registration page to load completely")
     public void waitForPageToLoad() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(registerButton));
+        WaitUtils.waitForVisibility(driver,registerButton,10);
     }
 
     @Step("Get current page title")

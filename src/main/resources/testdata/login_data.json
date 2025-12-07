@@ -1,0 +1,62 @@
+[
+  {
+    "testCase": "Valid Login - User 1",
+    "email": "testuser@example.com",
+    "password": "ValidPass123",
+    "expectedResult": "success"
+  },
+  {
+    "testCase": "Valid Login - User 2",
+    "email": "valid@test.com",
+    "password": "Test123",
+    "expectedResult": "success"
+  },
+  {
+    "testCase": "Invalid Password",
+    "email": "invalid@test.com",
+    "password": "WrongPass",
+    "expectedResult": "failure"
+  },
+  {
+    "testCase": "Non-existent Email",
+    "email": "wrongemail@test.com",
+    "password": "Password123",
+    "expectedResult": "failure"
+  },
+  {
+    "testCase": "Empty Email Field",
+    "email": "",
+    "password": "password123",
+    "expectedResult": "failure"
+  },
+  {
+    "testCase": "Empty Password Field",
+    "email": "user@test.com",
+    "password": "",
+    "expectedResult": "failure"
+  },
+  {
+    "testCase": "Both Fields Empty",
+    "email": "",
+    "password": "",
+    "expectedResult": "failure"
+  },
+  {
+    "testCase": "Invalid Email Format - No @",
+    "email": "invalidemail",
+    "password": "Pass123",
+    "expectedResult": "failure"
+  },
+  {
+    "testCase": "Special Characters Password",
+    "email": "test@example.com",
+    "password": "!@#$%^&*()",
+    "expectedResult": "failure"
+  },
+  {
+    "testCase": "SQL Injection Attempt - Email",
+    "email": "' OR '1'='1",
+    "password": "password",
+    "expectedResult": "failure"
+  }
+]

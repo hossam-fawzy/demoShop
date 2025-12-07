@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import utils.WaitUtils;
 
 public class PDPPage extends BasePage {
 
@@ -183,13 +184,14 @@ public class PDPPage extends BasePage {
 
     @Step("Wait for notification bar to appear")
     public boolean waitForNotification() {
-        return waitForVisibility(notificationBar, 5);
+        return WaitUtils.waitForVisibility(driver, notificationBar, 5) != null;
     }
 
     @Step("Wait for notification bar to disappear")
     public boolean waitForNotificationToDisappear() {
-        return waitForInvisibility(notificationBar, 5);
+        return WaitUtils.waitForInvisibility(driver, notificationBar, 5);
     }
+
 
     // Verification Methods
 
@@ -281,9 +283,10 @@ public class PDPPage extends BasePage {
 
     @Step("Wait for product page to load completely")
     public void waitForPageToLoad() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(productName));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(addToCartButton));
+        WaitUtils.waitForVisibility(driver, productName, 10);
+        WaitUtils.waitForVisibility(driver, addToCartButton, 10);
     }
+
 
     @Step("Verify product is available for purchase")
     public boolean isProductAvailable() {

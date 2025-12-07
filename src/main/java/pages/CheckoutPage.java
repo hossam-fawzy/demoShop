@@ -6,6 +6,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import utils.WaitUtils;
 
 public class CheckoutPage extends BasePage {
 
@@ -120,32 +121,32 @@ public class CheckoutPage extends BasePage {
 
     @Step("Wait for shipping section to load")
     public boolean waitForShippingSection(int timeout) {
-        return waitForVisibility(shippingContinueButton, timeout);
+        return WaitUtils.waitForVisibility(driver, shippingContinueButton, timeout) != null;
     }
 
     @Step("Wait for shipping method section to load")
     public boolean waitForShippingMethodSection(int timeout) {
-        return waitForVisibility(shippingMethodSection, timeout);
+        return WaitUtils.waitForVisibility(driver, shippingMethodSection, timeout) != null;
     }
 
     @Step("Wait for payment method section to load")
     public boolean waitForPaymentMethodSection(int timeout) {
-        return waitForVisibility(paymentMethodSection, timeout);
+        return WaitUtils.waitForVisibility(driver, paymentMethodSection, timeout) != null;
     }
 
     @Step("Wait for payment info section to load")
     public boolean waitForPaymentInfoSection(int timeout) {
-        return waitForVisibility(paymentInfoSection, timeout);
+        return WaitUtils.waitForVisibility(driver, paymentInfoSection, timeout) != null;
     }
 
     @Step("Wait for confirm order section to load")
     public boolean waitForConfirmOrderSection(int timeout) {
-        return waitForVisibility(confirmOrderSection, timeout);
+        return WaitUtils.waitForVisibility(driver, confirmOrderSection, timeout) != null;
     }
 
     @Step("Wait for order success title to appear")
     public boolean waitForOrderSuccessTitle(int timeout) {
-        return waitForVisibility(orderSuccessTitle, timeout);
+        return WaitUtils.waitForVisibility(driver, orderSuccessTitle, timeout) != null;
     }
 
     // Page Verification Methods
@@ -508,28 +509,31 @@ public class CheckoutPage extends BasePage {
     public void completeCheckoutWithCOD(String firstName, String lastName, String email,
                                         String country, String city, String address,
                                         String zipCode, String phoneNumber) {
+
         fillBillingAddress(firstName, lastName, email, country, city, address, zipCode, phoneNumber);
         clickBillingContinue();
 
-        waitForVisibility(shippingContinueButton, 5);
+        WaitUtils.waitForVisibility(driver, shippingContinueButton, 5);
         clickShippingContinue();
 
-        waitForVisibility(shippingMethodContinueButton, 5);
+        WaitUtils.waitForVisibility(driver, shippingMethodContinueButton, 5);
         selectGroundShipping();
         clickShippingMethodContinue();
 
-        waitForVisibility(paymentMethodContinueButton, 5);
+        WaitUtils.waitForVisibility(driver, paymentMethodContinueButton, 5);
         selectCashOnDelivery();
         clickPaymentMethodContinue();
 
-        waitForVisibility(paymentInfoContinueButton, 5);
+        WaitUtils.waitForVisibility(driver, paymentInfoContinueButton, 5);
         clickPaymentInfoContinue();
 
-        waitForVisibility(confirmOrderButton, 5);
+        WaitUtils.waitForVisibility(driver, confirmOrderButton, 5);
         clickConfirmOrder();
     }
 
-    // Helper Methods
+// ---------------------------------------------------------
+// Helper Methods
+// ---------------------------------------------------------
 
     @Step("Get current checkout page URL")
     public String getPageUrl() {
@@ -543,16 +547,17 @@ public class CheckoutPage extends BasePage {
 
     @Step("Wait for checkout page to load completely")
     public boolean waitForCheckoutPageLoad() {
-        return waitForVisibility(pageTitle, 10);
+        return WaitUtils.waitForVisibility(driver, pageTitle, 10) != null;
     }
 
-    // Additional Real-World Utility Methods
+// Additional Real-World Utility Methods
 
     @Step("Wait for checkout page to be fully loaded with explicit wait")
     public void waitForPageToLoad() {
-        wait.until(ExpectedConditions.visibilityOfElementLocated(pageTitle));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(billingAddressSection));
+        WaitUtils.waitForVisibility(driver, pageTitle, 10);
+        WaitUtils.waitForVisibility(driver, billingAddressSection, 10);
     }
+
 
     @Step("Get order total as double")
     public double getOrderTotalAsDouble() {
@@ -641,24 +646,25 @@ public class CheckoutPage extends BasePage {
     public void completeCheckoutWithCheckMoneyOrder(String firstName, String lastName, String email,
                                                     String country, String city, String address,
                                                     String zipCode, String phoneNumber) {
+
         fillBillingAddress(firstName, lastName, email, country, city, address, zipCode, phoneNumber);
         clickBillingContinue();
 
-        waitForVisibility(shippingContinueButton, 5);
+        WaitUtils.waitForVisibility(driver, shippingContinueButton, 5);
         clickShippingContinue();
 
-        waitForVisibility(shippingMethodContinueButton, 5);
+        WaitUtils.waitForVisibility(driver, shippingMethodContinueButton, 5);
         selectGroundShipping();
         clickShippingMethodContinue();
 
-        waitForVisibility(paymentMethodContinueButton, 5);
+        WaitUtils.waitForVisibility(driver, paymentMethodContinueButton, 5);
         selectCheckMoneyOrder();
         clickPaymentMethodContinue();
 
-        waitForVisibility(paymentInfoContinueButton, 5);
+        WaitUtils.waitForVisibility(driver, paymentInfoContinueButton, 5);
         clickPaymentInfoContinue();
 
-        waitForVisibility(confirmOrderButton, 5);
+        WaitUtils.waitForVisibility(driver, confirmOrderButton, 5);
         clickConfirmOrder();
     }
 
@@ -669,9 +675,10 @@ public class CheckoutPage extends BasePage {
 
     @Step("Wait for billing section to be interactive")
     public boolean waitForBillingSectionInteractive() {
-        return waitForVisibility(billingContinueButton, 10) &&
+        return WaitUtils.waitForVisibility(driver, billingContinueButton, 10) != null &&
                 isBillingContinueButtonEnabled();
     }
+
 
     @Step("Scroll to billing continue button")
     public void scrollToBillingContinueButton() {

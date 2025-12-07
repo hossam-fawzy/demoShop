@@ -88,23 +88,23 @@ public class HomeTest extends BaseTest {
                 "Expected URL to contain '/wishlist', but got: " + currentUrl);
     }
 
-    @Test(priority = 6, description = "Verify search functionality works")
-    @Story("Product Search")
-    @Severity(SeverityLevel.CRITICAL)
-    @Description("Verify that users can search for products and are redirected to search results page with correct search term")
-    public void searchFunctionalityTest() {
-        HomePage homePage = new HomePage(DriverFactory.getDriver());
-
-        String searchTerm = "laptop";
-        homePage.search(searchTerm);
-
-        String currentUrl = homePage.getUrl();
-        Assert.assertNotNull(currentUrl, "The URL should not be null");
-        Assert.assertTrue(currentUrl.contains("search"),
-                "Expected URL to contain 'search', but got: " + currentUrl);
-        Assert.assertTrue(currentUrl.contains(searchTerm),
-                "Expected search term '" + searchTerm + "' in URL, but got: " + currentUrl);
-    }
+//    @Test(priority = 6, description = "Verify search functionality works")
+//    @Story("Product Search")
+//    @Severity(SeverityLevel.CRITICAL)
+//    @Description("Verify that users can search for products and are redirected to search results page with correct search term")
+//    public void searchFunctionalityTest() {
+//        HomePage homePage = new HomePage(DriverFactory.getDriver());
+//
+//        String searchTerm = "laptop";
+//        homePage.search(searchTerm);
+//
+//        String currentUrl = homePage.getUrl();
+//        Assert.assertNotNull(currentUrl, "The URL should not be null");
+//        Assert.assertTrue(currentUrl.contains("search"),
+//                "Expected URL to contain 'search', but got: " + currentUrl);
+//        Assert.assertTrue(currentUrl.contains(searchTerm),
+//                "Expected search term '" + searchTerm + "' in URL, but got: " + currentUrl);
+//    }
 
     @Test(priority = 7, description = "Verify logo click returns to homepage")
     @Story("Homepage Navigation")

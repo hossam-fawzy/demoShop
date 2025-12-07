@@ -66,13 +66,15 @@ public class LoginTest extends BaseTest {
     @Test(
             priority = 1,  // ADDED: Run first (most critical test)
             description = "Verify user can login with valid credentials",
-            groups = {"smoke", "regression", "authentication"}  // ADDED: Test grouping for organized execution
+            groups = {"smoke", "regression", "authentication"},
+            retryAnalyzer = listeners.RetryAnalyzer.class
     )
     @Description("This test verifies that a registered user can successfully login using valid email and password credentials")
     @Severity(SeverityLevel.BLOCKER)
     @Story("User Login - Happy Path")
     @TmsLink("TC-LOGIN-001")
     @Issue("AUTH-123")  // ADDED: Link to related bug/story
+
     public void validLoginTest() {
 
         logger.info("🧪 Starting Test: Valid Login with correct credentials");

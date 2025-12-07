@@ -120,7 +120,7 @@ public class DriverFactory {
      */
     private static void configureDriver() {
         WebDriver webDriver = driver.get();
-        webDriver.manage().window().maximize();
+        webDriver.manage().window().minimize();
 
         int implicitWait = ConfigReader.getInt("implicitWait", 10);
         int pageLoadTimeout = ConfigReader.getInt("pageLoadTimeout", 30);

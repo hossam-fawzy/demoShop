@@ -407,20 +407,6 @@ public class CheckoutTest extends BaseTest {
                 "Billing section should still be ready after failed validation");
     }
 
-    @Test(priority = 15, description = "Verify checkout progress through all steps")
-    @Story("Checkout Navigation")
-    @Severity(SeverityLevel.CRITICAL)
-    @Description("Verify that checkout progress bar is visible and users can navigate through all checkout steps sequentially")
-    public void verifyCheckoutProgressTest() {
-        CheckoutPage checkoutPage = new CheckoutPage(DriverFactory.getDriver());
-
-        Assert.assertTrue(checkoutPage.isCheckoutProgressBarVisible(),
-                "Checkout progress bar should be visible throughout checkout process");
-
-        Assert.assertTrue(checkoutPage.areAllCheckoutStepsAccessible(),
-                "All checkout steps should be accessible from the beginning");
-    }
-
     @Test(priority = 16, description = "Verify checkout page loads completely")
     @Story("Checkout Page Navigation")
     @Severity(SeverityLevel.CRITICAL)

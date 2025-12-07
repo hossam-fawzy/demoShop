@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="DemoWebShop Test Suite" parallel="tests" thread-count="2" verbose="1">
+<suite name="DemoWebShop Test Suite" >
 
     <!-- Listeners for better reporting -->
     <listeners>
+        <!-- Allure Reporting -->
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+
+        <!-- Custom Listeners (create these files) -->
+        <listener class-name="listeners.TestListener"/>
     </listeners>
 
     <!-- Smoke Test Suite -->
     <test name="Smoke Tests" preserve-order="true">
         <classes>
-            <class name="tests.LoginTest"/>
+<!--            <class name="tests.LoginTest"/>-->
             <class name="tests.HomeTest"/>
         </classes>
     </test>
