@@ -13,7 +13,13 @@ target/
 *.iml
 *.ipr
 
-
+# Allure Test Reports
+allure-results/
+allure-report/
+allure-history/
+**/allure-results/
+**/allure-report/
+**/allure-history/
 
 # Maven
 target/
