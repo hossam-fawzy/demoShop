@@ -1,6 +1,0 @@
-{
-  "validLogins": [
-    {"email":"user1@example.com","password":"Pass1"},
-    {"email":"user2@example.com","password":"Pass2"}
-  ]
-}

@@ -32,6 +32,9 @@ release.properties
 # Logs
 *.log
 
+# AspectJ error dumps
+ajcore.*.txt
+
 # TestNG / Allure Reports
 test-output/
 allure-results/
