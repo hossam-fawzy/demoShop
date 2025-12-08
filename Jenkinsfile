@@ -34,7 +34,7 @@ pipeline {
     post {
 
         success {
-            pwsh """
+            powershell  """
             Invoke-RestMethod -Uri "$env:SLACK_WEBHOOK" -Method Post -ContentType 'application/json' -Body '{
                 "text": ":large_green_circle: *BUILD SUCCESS*  `#${env.BUILD_NUMBER}`  <${env.BUILD_URL}|Open Jenkins>"
             }'
@@ -42,7 +42,7 @@ pipeline {
         }
 
         failure {
-            pwsh """
+            powershell  """
             Invoke-RestMethod -Uri "$env:SLACK_WEBHOOK" -Method Post -ContentType 'application/json' -Body '{
                 "text": ":red_circle: *BUILD FAILED*  `#${env.BUILD_NUMBER}`  <${env.BUILD_URL}|Check logs>"
             }'
