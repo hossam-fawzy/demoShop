@@ -34,27 +34,19 @@ pipeline {
     post {
 
         success {
-            slackSend(
-                webhookUrl: SLACK_WEBHOOK,
-                message: """
-:large_green_circle: *BUILD SUCCESS*
-*Project:* ${env.JOB_NAME}
-*Build:* #${env.BUILD_NUMBER}
-*Branch:* ${env.GIT_BRANCH}
-*Report:* ${env.BUILD_URL}allure/
-""")
+            pwsh """
+            Invoke-RestMethod -Uri "$env:SLACK_WEBHOOK" -Method Post -ContentType 'application/json' -Body '{
+                "text": ":large_green_circle: *BUILD SUCCESS*  `#${env.BUILD_NUMBER}`  <${env.BUILD_URL}|Open Jenkins>"
+            }'
+            """
         }
 
         failure {
-            slackSend(
-                webhookUrl: SLACK_WEBHOOK,
-                message: """
-:red_circle: *BUILD FAILED*
-*Project:* ${env.JOB_NAME}
-*Build:* #${env.BUILD_NUMBER}
-*Branch:* ${env.GIT_BRANCH}
-*Logs:* ${env.BUILD_URL}
-""")
+            pwsh """
+            Invoke-RestMethod -Uri "$env:SLACK_WEBHOOK" -Method Post -ContentType 'application/json' -Body '{
+                "text": ":red_circle: *BUILD FAILED*  `#${env.BUILD_NUMBER}`  <${env.BUILD_URL}|Check logs>"
+            }'
+            """
         }
 
         always {
