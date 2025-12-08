@@ -3,14 +3,14 @@ pipeline {
 
     tools {
         jdk 'jdk17'
-        maven 'Maven3'
+        maven 'maven-3.9'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/hossam-fawzy/demoShop', branch: 'main'
+                git url: 'https://github.com/hossam-fawzy/demoShop', branch: 'master'
             }
         }
 
