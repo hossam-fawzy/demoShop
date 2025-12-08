@@ -11,19 +11,44 @@ import java.util.List;
 
 /**
  * Base Page class providing reusable methods for all Page Objects.
- * Now fully integrated with WaitUtils for clean architecture.
+ * Implements Page Object Model (POM) pattern with best practices:
+ * - Centralized element interaction methods
+ * - Proper error handling and logging
+ * - Wait utilities integration
+ * - Thread-safe WebDriver management
+ * 
+ * All page objects should extend this class to inherit common functionality.
+ * 
+ * @author QA Team
+ * @version 2.0
  */
 public class BasePage {
 
     protected static final Logger logger = LogManager.getLogger(BasePage.class);
     protected WebDriver driver;
 
+    /**
+     * Default constructor that gets driver from DriverFactory.
+     * Use this when you want to use the current thread's driver instance.
+     */
     public BasePage() {
         this.driver = DriverFactory.getDriver();
+        logger.debug("BasePage initialized with driver from DriverFactory");
     }
 
+    /**
+     * Constructor that accepts a WebDriver instance.
+     * Use this when you need to pass a specific driver instance.
+     * 
+     * @param driver WebDriver instance to use
+     * @throws IllegalArgumentException if driver is null
+     */
     public BasePage(WebDriver driver) {
+        if (driver == null) {
+            throw new IllegalArgumentException("WebDriver cannot be null");
+        }
         this.driver = driver;
+        logger.debug("BasePage initialized with provided driver");
     }
 
     // ---------------------------------------------------------
@@ -34,15 +59,49 @@ public class BasePage {
         return WaitUtils.waitForPresence(driver, locator);
     }
 
+    /**
+     * Clicks on an element after waiting for it to be clickable.
+     * Includes error handling and logging.
+     * 
+     * @param locator Element locator
+     * @throws TimeoutException if element is not clickable
+     * @throws ElementNotInteractableException if element cannot be clicked
+     */
     protected void click(By locator) {
-        WebElement element = WaitUtils.waitForClickable(driver, locator);
-        element.click();
+        try {
+            WebElement element = WaitUtils.waitForClickable(driver, locator);
+            element.click();
+            logger.debug("Successfully clicked element: {}", locator);
+        } catch (TimeoutException e) {
+            logger.error("Element not clickable: {}", locator);
+            throw new TimeoutException("Element not clickable within timeout: " + locator, e);
+        } catch (ElementNotInteractableException e) {
+            logger.error("Element not interactable: {}", locator);
+            throw new ElementNotInteractableException("Element not interactable: " + locator, e);
+        }
     }
 
+    /**
+     * Writes text to an input field after clearing it.
+     * Includes error handling and logging.
+     * 
+     * @param locator Element locator
+     * @param text Text to write
+     * @throws TimeoutException if element is not visible
+     */
     protected void write(By locator, String text) {
-        WebElement element = WaitUtils.waitForVisibility(driver, locator);
-        element.clear();
-        element.sendKeys(text);
+        try {
+            WebElement element = WaitUtils.waitForVisibility(driver, locator);
+            element.clear();
+            element.sendKeys(text);
+            logger.debug("Successfully entered text '{}' into element: {}", text, locator);
+        } catch (TimeoutException e) {
+            logger.error("Element not visible for writing: {}", locator);
+            throw new TimeoutException("Element not visible within timeout: " + locator, e);
+        } catch (Exception e) {
+            logger.error("Failed to write text to element: {}", locator, e);
+            throw new RuntimeException("Failed to write text to element: " + locator, e);
+        }
     }
 
     protected String getText(By locator) {

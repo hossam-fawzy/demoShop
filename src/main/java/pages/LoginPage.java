@@ -2,15 +2,22 @@ package pages;
 
 import base.BasePage;
 import io.qameta.allure.Step;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Page Object for Login functionality
- * Handles all login-related operations and validations
+ * Page Object for Login Page.
+ * Handles all login-related operations and validations.
+ * Follows Page Object Model (POM) best practices with proper encapsulation.
+ * 
+ * @author QA Team
+ * @version 2.0
  */
 public class LoginPage extends BasePage {
+
+    private static final Logger logger = LogManager.getLogger(LoginPage.class);
 
     public LoginPage(WebDriver driver) {
         super(driver);
@@ -180,5 +187,21 @@ public class LoginPage extends BasePage {
 
     public void clickForgotPassword() {
         click(forgetPasswordButton);
+    }
+
+    /**
+     * Get current page URL
+     * @return Current URL as string
+     */
+    public String getPageUrl() {
+        return driver.getCurrentUrl();
+    }
+
+    /**
+     * Get page title
+     * @return Page title as string
+     */
+    public String getPageTitle() {
+        return driver.getTitle();
     }
 }

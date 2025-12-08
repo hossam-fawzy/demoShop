@@ -2,10 +2,22 @@ package pages;
 
 import base.BasePage;
 import io.qameta.allure.Step;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
+/**
+ * Page Object for Home Page.
+ * Handles all home page operations including navigation, search, and category selection.
+ * Follows Page Object Model (POM) best practices.
+ * 
+ * @author QA Team
+ * @version 2.0
+ */
 public class HomePage extends BasePage {
+
+    private static final Logger logger = LogManager.getLogger(HomePage.class);
 
     // ≡ Locators
     private final By loginLink    = By.xpath("//a[normalize-space()='Log in']");

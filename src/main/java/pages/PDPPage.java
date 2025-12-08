@@ -89,21 +89,22 @@ public class PDPPage extends BasePage {
         clear(quantityInput);
         write(quantityInput, quantity);
     }
-    @Step("Is increase button visible")
+    @Step("Check if increase quantity button is visible")
     public boolean isIncreaseButtonVisible() {
         try {
-        isVisible(increaseQuantityButton);
-        return false;
-        }catch(Exception e) {
+            return isVisible(increaseQuantityButton);
+        } catch (Exception e) {
+            logger.warn("Failed to check increase button visibility: {}", e.getMessage());
             return false;
         }
     }
-    @Step("Is decrease button visible")
+
+    @Step("Check if decrease quantity button is visible")
     public boolean isDecreaseButtonVisible() {
         try {
-        isVisible(decreaseQuantityButton);
-        return false;
-        }catch(Exception e) {
+            return isVisible(decreaseQuantityButton);
+        } catch (Exception e) {
+            logger.warn("Failed to check decrease button visibility: {}", e.getMessage());
             return false;
         }
     }

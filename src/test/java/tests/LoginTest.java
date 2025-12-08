@@ -110,7 +110,7 @@ public class LoginTest extends BaseTest {
 
         Allure.step("Step 1: Navigate to Login page", () -> {
             logger.debug("Navigating to login page...");
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
 
             // ENHANCEMENT: Verify we're on home page first
             Assert.assertTrue(homePage.isLogoVisible(),
@@ -121,7 +121,7 @@ public class LoginTest extends BaseTest {
         });
 
         Allure.step("Step 2: Enter valid credentials and submit login form", () -> {
-            LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+            LoginPage loginPage = new LoginPage();
 
             // ENHANCEMENT: Verify login page loaded
             Assert.assertTrue(loginPage.isLoginButtonVisible(),
@@ -145,7 +145,7 @@ public class LoginTest extends BaseTest {
         });
 
         Allure.step("Step 3: Verify user is successfully logged in", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
 
             // ENHANCEMENT: Multiple assertions for thorough verification
             Assert.assertTrue(homePage.isUserLoggedIn(),
@@ -155,7 +155,7 @@ public class LoginTest extends BaseTest {
                     "Login link should NOT be visible after successful login");
 
             // ENHANCEMENT: Verify URL changed (defensive assertion)
-            String currentUrl = DriverFactory.getDriver().getCurrentUrl();
+            String currentUrl = homePage.getUrl();
             Assert.assertFalse(currentUrl.contains("/login"),
                     "Should have navigated away from login page");
 
@@ -273,13 +273,13 @@ public class LoginTest extends BaseTest {
         String expectedError = determineExpectedError(loginData);
 
         Allure.step("Step 1: Navigate to Login page", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             homePage.clickLogin();
             logger.debug("Navigated to login page for scenario: {}", scenarioName);
         });
 
         Allure.step("Step 2: Attempt login with invalid credentials", () -> {
-            LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+            LoginPage loginPage = new LoginPage();
 
             // BEST PRACTICE: Log test data (helps with debugging failures)
             String displayEmail = loginData.hasEmail() ? email : "<empty>";
@@ -303,7 +303,7 @@ public class LoginTest extends BaseTest {
         });
 
         Allure.step("Step 3: Verify appropriate error message is displayed", () -> {
-            LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+            LoginPage loginPage = new LoginPage();
 
             // ENHANCEMENT: Wait for error message to appear
             Assert.assertTrue(loginPage.isErrorMessageDisplayed(),
@@ -329,7 +329,7 @@ public class LoginTest extends BaseTest {
         });
 
         Allure.step("Step 4: Verify user is NOT logged in", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
 
             // ENHANCEMENT: Defensive check - ensure failed login doesn't log user in
             Assert.assertFalse(homePage.isUserLoggedIn(),
@@ -364,13 +364,13 @@ public class LoginTest extends BaseTest {
         logger.info("🧪 Starting Test: Login Page Elements Verification");
 
         Allure.step("Step 1: Navigate to Login page", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             homePage.clickLogin();
             logger.debug("Navigated to login page");
         });
 
         Allure.step("Step 2: Verify all critical page elements are present", () -> {
-            LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+            LoginPage loginPage = new LoginPage();
 
             // ENHANCEMENT: Comprehensive element verification
             Assert.assertTrue(loginPage.isEmailFieldVisible(),
@@ -392,12 +392,13 @@ public class LoginTest extends BaseTest {
             logger.info("✅ All login page elements verified");
 
             // ADDED: Attach page info to report
-            Allure.addAttachment("Page URL", DriverFactory.getDriver().getCurrentUrl());
-            Allure.addAttachment("Page Title", DriverFactory.getDriver().getTitle());
+            Allure.addAttachment("Page URL", loginPage.getPageUrl());
+            Allure.addAttachment("Page Title", loginPage.getPageTitle());
         });
 
         Allure.step("Step 3: Verify page URL is correct", () -> {
-            String currentUrl = DriverFactory.getDriver().getCurrentUrl();
+            LoginPage loginPage = new LoginPage();
+            String currentUrl = loginPage.getPageUrl();
             Assert.assertTrue(currentUrl.contains("/login"),
                     "URL should contain '/login' - Current URL: " + currentUrl);
             logger.debug("URL verified: {}", currentUrl);
@@ -426,11 +427,11 @@ public class LoginTest extends BaseTest {
         logger.info("🧪 Starting Test: Remember Me Checkbox Functionality");
 
         Allure.step("Step 1: Navigate to Login page", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             homePage.clickLogin();
         });
 
-        LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+        LoginPage loginPage = new LoginPage();
 
         Allure.step("Step 2: Verify initial state (should be unchecked)", () -> {
             boolean initialState = loginPage.isRememberMeChecked();
@@ -489,25 +490,26 @@ public class LoginTest extends BaseTest {
         logger.info("🧪 Starting Test: Forgot Password Link Functionality");
 
         Allure.step("Step 1: Navigate to Login page", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             homePage.clickLogin();
         });
 
         Allure.step("Step 2: Verify Forgot Password link is visible", () -> {
-            LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+            LoginPage loginPage = new LoginPage();
             Assert.assertTrue(loginPage.isForgotPasswordLinkVisible(),
                     "Forgot Password link should be visible on login page");
             logger.debug("✅ Forgot Password link is visible");
         });
 
         Allure.step("Step 3: Click Forgot Password link", () -> {
-            LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+            LoginPage loginPage = new LoginPage();
             loginPage.clickForgotPassword();
             logger.debug("Clicked Forgot Password link");
         });
 
         Allure.step("Step 4: Verify navigation to password recovery page", () -> {
-            String currentUrl = DriverFactory.getDriver().getCurrentUrl();
+            LoginPage loginPage = new LoginPage();
+            String currentUrl = loginPage.getPageUrl();
             Assert.assertTrue(currentUrl.contains("/passwordrecovery"),
                     "Should navigate to password recovery page - Current URL: " + currentUrl);
 
@@ -538,10 +540,10 @@ public class LoginTest extends BaseTest {
         logger.info("🧪 Starting Test: Complete Login/Logout Flow");
 
         Allure.step("Step 1: Login with valid credentials", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             homePage.clickLogin();
 
-            LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+            LoginPage loginPage = new LoginPage();
             String email = ConfigReader.get(VALID_EMAIL_KEY);
             String password = ConfigReader.get(VALID_PASSWORD_KEY);
 
@@ -552,20 +554,20 @@ public class LoginTest extends BaseTest {
         });
 
         Allure.step("Step 2: Verify user is logged in", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             Assert.assertTrue(homePage.isUserLoggedIn(),
                     "User should be logged in after successful login");
             logger.debug("✅ User logged in successfully");
         });
 
         Allure.step("Step 3: Perform logout", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             homePage.clickLogout();
             logger.debug("Clicked logout");
         });
 
         Allure.step("Step 4: Verify user is logged out", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
 
             Assert.assertFalse(homePage.isUserLoggedIn(),
                     "User should NOT be logged in after logout");
@@ -579,7 +581,8 @@ public class LoginTest extends BaseTest {
         Allure.step("Step 5: Verify cannot access protected pages", () -> {
             // ENHANCEMENT: Try to access a protected page and verify redirect
             // This is a defensive check to ensure logout actually worked
-            String currentUrl = DriverFactory.getDriver().getCurrentUrl();
+            HomePage homePage = new HomePage();
+            String currentUrl = homePage.getUrl();
             Assert.assertFalse(currentUrl.contains("/customer/info"),
                     "Should not be able to access customer info page when logged out");
 
@@ -610,7 +613,7 @@ public class LoginTest extends BaseTest {
         logger.info("🧪 Starting Test: Login with Remember Me Enabled");
 
         Allure.step("Step 1: Navigate to Login page", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             homePage.clickLogin();
         });
 
@@ -635,7 +638,7 @@ public class LoginTest extends BaseTest {
         });
 
         Allure.step("Step 4: Verify successful login", () -> {
-            HomePage homePage = new HomePage(DriverFactory.getDriver());
+            HomePage homePage = new HomePage();
             Assert.assertTrue(homePage.isUserLoggedIn(),
                     "User should be logged in successfully");
             logger.info("✅ Login successful with Remember Me enabled");

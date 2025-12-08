@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -23,11 +24,33 @@ public class BaseTest {
     @BeforeMethod
     public void setup() {
         logger.info("Starting test setup");
-        DriverFactory.initDriver();
-
+        
+        // Initialize driver if not already initialized
+        if (!DriverFactory.isDriverInitialized()) {
+            DriverFactory.initDriver();
+        }
+        
+        // Get the driver instance
+        WebDriver driver = DriverFactory.getDriver();
+        
+        // Navigate to base URL
         String baseUrl = ConfigReader.get("baseUrl");
+        if (baseUrl == null || baseUrl.isEmpty()) {
+            logger.error("Base URL is not configured in config.properties");
+            throw new RuntimeException("Base URL is not configured. Please set 'baseUrl' in config.properties");
+        }
+        
         logger.info("Navigating to: {}", baseUrl);
-        DriverFactory.getDriver().get(baseUrl);
+        try {
+            driver.get(baseUrl);
+            logger.info("Successfully navigated to: {}", baseUrl);
+            
+            // Wait for page to load
+            utils.WaitUtils.waitForPageToLoad(driver);
+        } catch (Exception e) {
+            logger.error("Failed to navigate to {}: {}", baseUrl, e.getMessage(), e);
+            throw new RuntimeException("Failed to navigate to base URL: " + baseUrl, e);
+        }
     }
 
     @AfterMethod

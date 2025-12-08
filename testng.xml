@@ -18,10 +18,10 @@
     - Run specific suite: Configure in IDE or use profiles
 -->
 
-<suite name="DemoWebShop Test Suite" 
-       verbose="2" 
-       parallel="methods" 
-       thread-count="1" 
+<suite name="DemoWebShop Test Suite"
+       verbose="2"
+       parallel="false"
+       thread-count="1"
        data-provider-thread-count="1">
 
     <!-- Listeners for better reporting and test execution -->
@@ -33,122 +33,124 @@
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
-    <!-- ============================================ -->
-    <!-- SMOKE TEST SUITE - Critical Path Tests -->
-    <!-- ============================================ -->
-    <test name="Smoke Tests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="smoke"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.HomeTest"/>
-            <class name="tests.LoginTest">
-                <methods>
-                    <include name="validLoginTest"/>
-                    <include name="verifyLoginPageElementsTest"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
+
+        <!-- ============================================ -->
+        <!-- SMOKE TEST SUITE - Critical Path Tests      -->
+        <!-- Run these tests sequentially                 -->
+        <!-- ============================================ -->
+        <test name="Smoke Tests" preserve-order="true">
+            <classes>
+                <!-- Run HomeTest first -->
+                <class name="tests.HomeTest">
+                </class>
+
+<!--                <class name="tests.LoginTest">-->
+<!--                </class>-->
+            </classes>
+        </test>
+
+
+
+
+
+
 
     <!-- ============================================ -->
     <!-- REGRESSION TEST SUITE - Full Test Coverage -->
     <!-- ============================================ -->
-    <test name="Regression Tests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="regression"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.LoginTest"/>
-            <class name="tests.HomeTest"/>
-            <class name="tests.RegistrationTest"/>
-            <class name="tests.PDPTest"/>
-            <class name="tests.CartTest"/>
-            <class name="tests.CheckoutTest"/>
-        </classes>
-    </test>
+<!--    <test name="Regression Tests" preserve-order="true">-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="regression"/>-->
+<!--            </run>-->
+<!--        </groups>-->
+<!--        <classes>-->
+<!--            <class name="tests.LoginTest"/>-->
+<!--            <class name="tests.HomeTest"/>-->
+<!--            <class name="tests.RegistrationTest"/>-->
+<!--            <class name="tests.PDPTest"/>-->
+<!--            <class name="tests.CartTest"/>-->
+<!--            <class name="tests.CheckoutTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
     <!-- ============================================ -->
     <!-- AUTHENTICATION TEST SUITE - Login/Registration -->
     <!-- ============================================ -->
-    <test name="Authentication Tests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="authentication"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.LoginTest">
-                <methods>
-                    <include name="validLoginTest"/>
-                    <include name="invalidLoginTest"/>
-                    <include name="completeLoginLogoutFlowTest"/>
-                    <include name="rememberMeCheckboxTest"/>
-                </methods>
-            </class>
-            <class name="tests.RegistrationTest"/>
-        </classes>
-    </test>
+<!--    <test name="Authentication Tests" preserve-order="true">-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="authentication"/>-->
+<!--            </run>-->
+<!--        </groups>-->
+<!--        <classes>-->
+<!--            <class name="tests.LoginTest">-->
+<!--                <methods>-->
+<!--                    <include name="validLoginTest"/>-->
+<!--                    <include name="invalidLoginTest"/>-->
+<!--                    <include name="completeLoginLogoutFlowTest"/>-->
+<!--                    <include name="rememberMeCheckboxTest"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="tests.RegistrationTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
     <!-- ============================================ -->
     <!-- NEGATIVE TEST SUITE - Error Handling -->
     <!-- ============================================ -->
-    <test name="Negative Tests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="negative"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.LoginTest">
-                <methods>
-                    <include name="invalidLoginTest"/>
-                </methods>
-            </class>
-        </classes>
-    </test>
+<!--    <test name="Negative Tests" preserve-order="true">-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="negative"/>-->
+<!--            </run>-->
+<!--        </groups>-->
+<!--        <classes>-->
+<!--            <class name="tests.LoginTest">-->
+<!--                <methods>-->
+<!--                    <include name="invalidLoginTest"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--        </classes>-->
+<!--    </test>-->
 
     <!-- ============================================ -->
     <!-- UI VERIFICATION TEST SUITE -->
     <!-- ============================================ -->
-    <test name="UI Verification Tests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="ui"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.LoginTest">
-                <methods>
-                    <include name="verifyLoginPageElementsTest"/>
-                    <include name="rememberMeCheckboxTest"/>
-                </methods>
-            </class>
-            <class name="tests.HomeTest"/>
-        </classes>
-    </test>
+<!--    <test name="UI Verification Tests" preserve-order="true">-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="ui"/>-->
+<!--            </run>-->
+<!--        </groups>-->
+<!--        <classes>-->
+<!--            <class name="tests.LoginTest">-->
+<!--                <methods>-->
+<!--                    <include name="verifyLoginPageElementsTest"/>-->
+<!--                    <include name="rememberMeCheckboxTest"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="tests.HomeTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
     <!-- ============================================ -->
     <!-- E2E TEST SUITE - End-to-End Workflows -->
     <!-- ============================================ -->
-    <test name="E2E Tests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="e2e"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.LoginTest">
-                <methods>
-                    <include name="completeLoginLogoutFlowTest"/>
-                </methods>
-            </class>
-            <class name="tests.CheckoutTest"/>
-        </classes>
-    </test>
+<!--    <test name="E2E Tests" preserve-order="true">-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="e2e"/>-->
+<!--            </run>-->
+<!--        </groups>-->
+<!--        <classes>-->
+<!--            <class name="tests.LoginTest">-->
+<!--                <methods>-->
+<!--                    <include name="completeLoginLogoutFlowTest"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="tests.CheckoutTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
 </suite>

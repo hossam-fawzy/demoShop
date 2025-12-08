@@ -116,27 +116,57 @@ public class DriverFactory {
     }
 
     /**
-     * Applies common driver configurations
+     * Applies common driver configurations from config.properties.
+     * Sets window size, implicit wait, and page load timeout.
      */
     private static void configureDriver() {
         WebDriver webDriver = driver.get();
-        webDriver.manage().window().maximize();
+        
+        try {
+            // Maximize window for consistent viewport
+            webDriver.manage().window().maximize();
+            logger.debug("Browser window maximized");
 
-        int implicitWait = ConfigReader.getInt("implicitWait", 10);
-        int pageLoadTimeout = ConfigReader.getInt("pageLoadTimeout", 30);
+            // Get timeout values from configuration
+            int implicitWait = ConfigReader.getInt("implicitWait", 10);
+            int pageLoadTimeout = ConfigReader.getInt("pageLoadTimeout", 60);
 
-        webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitWait));
-        webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(pageLoadTimeout));
+            // Apply timeouts
+            webDriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implicitWait));
+            webDriver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(pageLoadTimeout));
+            
+            logger.info("Driver configured - Implicit wait: {}s, Page load timeout: {}s", 
+                    implicitWait, pageLoadTimeout);
+        } catch (Exception e) {
+            logger.error("Failed to configure driver: {}", e.getMessage(), e);
+            throw new RuntimeException("Driver configuration failed", e);
+        }
     }
 
     /**
-     * Returns the WebDriver instance for current thread
+     * Returns the WebDriver instance for current thread.
+     * If driver is not initialized, it will be initialized automatically.
+     * However, navigation to base URL must be done separately.
+     * 
+     * @return WebDriver instance for current thread
      */
     public static WebDriver getDriver() {
-        if (driver.get() == null) {
+        WebDriver currentDriver = driver.get();
+        if (currentDriver == null) {
+            logger.warn("Driver is null, initializing new driver. Make sure to navigate to URL after initialization.");
             initDriver();
+            currentDriver = driver.get();
         }
-        return driver.get();
+        return currentDriver;
+    }
+    
+    /**
+     * Checks if driver is initialized for current thread.
+     * 
+     * @return true if driver is initialized, false otherwise
+     */
+    public static boolean isDriverInitialized() {
+        return driver.get() != null;
     }
 
     /**
