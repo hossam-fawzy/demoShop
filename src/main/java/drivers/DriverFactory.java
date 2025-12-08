@@ -36,7 +36,7 @@ public class DriverFactory {
         }
 
         String browser = ConfigReader.get("browser", "chrome").toLowerCase();
-        boolean headless = ConfigReader.getBoolean("headless", false);
+        boolean headless = ConfigReader.getBoolean("headless", true);
 
         logger.info("Initializing {} driver (headless: {})", browser, headless);
 
