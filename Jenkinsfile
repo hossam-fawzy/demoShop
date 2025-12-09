@@ -15,7 +15,20 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                bat "mvn clean test"
+                bat "mvn test -Dgroups=smoke"
+            }
+        }
+
+        stage('JaCoCo Coverage') {
+            steps {
+                // Generate JaCoCo report
+                bat "mvn jacoco:report"
+            }
+            post {
+                always {
+                    // Archive JaCoCo report HTML files
+                    archiveArtifacts artifacts: 'target/site/jacoco/**/*', allowEmptyArchive: true
+                }
             }
         }
 
@@ -27,7 +40,6 @@ pipeline {
     }
 
     post {
-
         success {
             withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
                 powershell """

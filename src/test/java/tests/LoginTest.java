@@ -103,7 +103,6 @@ public class LoginTest extends BaseTest {
     @Story("User Login - Happy Path")
     @TmsLink("TC-LOGIN-001")
     @Issue("AUTH-123")  // ADDED: Link to related bug/story
-
     public void validLoginTest() {
 
         logger.info("🧪 Starting Test: Valid Login with correct credentials");
