@@ -44,8 +44,8 @@
                 <class name="tests.HomeTest">
                 </class>
 
-<!--                <class name="tests.LoginTest">-->
-<!--                </class>-->
+                <class name="tests.LoginTest">
+                </class>
             </classes>
         </test>
 

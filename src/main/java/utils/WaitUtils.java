@@ -28,10 +28,10 @@ public class WaitUtils {
      */
     private static long getDefaultTimeout() {
         try {
-            return ConfigReader.getInt("explicitWait", 30);
+            return ConfigReader.getInt("explicitWait", 8);
         } catch (Exception e) {
-            logger.warn("Failed to read explicitWait from config, using default: 30 seconds", e);
-            return 30;
+            logger.warn("Failed to read explicitWait from config, using default: 8 seconds", e);
+            return 8;
         }
     }
 

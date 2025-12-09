@@ -2,6 +2,7 @@ package base;
 
 import drivers.DriverFactory;
 import io.qameta.allure.Allure;
+import io.qameta.allure.testng.AllureTestNg;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.OutputType;
@@ -10,6 +11,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Listeners;
 import utils.ConfigReader;
 
 import java.io.ByteArrayInputStream;
@@ -18,6 +20,7 @@ import java.io.ByteArrayInputStream;
  * Base test class providing common setup and teardown for all test classes.
  * Handles driver initialization, navigation, and screenshot capture on failure.
  */
+@Listeners({AllureTestNg.class})
 public class BaseTest {
     protected static final Logger logger = LogManager.getLogger(BaseTest.class);
 
