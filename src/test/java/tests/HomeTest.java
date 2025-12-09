@@ -13,7 +13,7 @@ import utils.ConfigReader;
 @Feature("Homepage Functionality")
 public class HomeTest extends BaseTest {
 
-    @Test(priority = 1, description = "Verify homepage main elements are visible")
+    @Test(priority = 1, description = "Verify homepage main elements are visible",groups = {"smoke"})
     @Story("Homepage UI Verification")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Validate that all essential homepage elements (logo, navigation links, search, cart, wishlist) are visible to users")
@@ -28,7 +28,7 @@ public class HomeTest extends BaseTest {
         Assert.assertTrue(homePage.isWishlistVisible(), "Wishlist icon should be visible");
     }
 
-    @Test(priority = 2, description = "Verify clicking login link navigates to login page")
+    @Test(priority = 2, description = "Verify clicking login link navigates to login page",groups = {"smoke"})
     @Story("User Authentication Navigation")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that clicking the login link successfully navigates user to the login page")
@@ -43,7 +43,7 @@ public class HomeTest extends BaseTest {
                 "Expected URL to contain '/login', but got: " + currentUrl);
     }
 
-    @Test(priority = 3, description = "Verify clicking register link navigates to register page")
+    @Test(priority = 3, description = "Verify clicking register link navigates to register page",groups = {"smoke"})
     @Story("User Registration Navigation")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that clicking the register link successfully navigates user to the registration page")
@@ -58,7 +58,7 @@ public class HomeTest extends BaseTest {
                 "Expected URL to contain '/register', but got: " + currentUrl);
     }
 
-    @Test(priority = 4, description = "Verify clicking cart navigates to shopping cart page")
+    @Test(priority = 4, description = "Verify clicking cart navigates to shopping cart page",groups = {"smoke"})
     @Story("Shopping Cart Navigation")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that clicking the cart icon navigates user to the shopping cart page")
@@ -73,7 +73,7 @@ public class HomeTest extends BaseTest {
                 "Expected URL to contain '/cart', but got: " + currentUrl);
     }
 
-    @Test(priority = 5, description = "Verify clicking wishlist navigates to wishlist page")
+    @Test(priority = 5, description = "Verify clicking wishlist navigates to wishlist page",groups = {"smoke"})
     @Story("Wishlist Navigation")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that clicking the wishlist icon navigates user to the wishlist page")
@@ -106,7 +106,7 @@ public class HomeTest extends BaseTest {
 //                "Expected search term '" + searchTerm + "' in URL, but got: " + currentUrl);
 //    }
 
-    @Test(priority = 7, description = "Verify logo click returns to homepage")
+    @Test(priority = 7, description = "Verify logo click returns to homepage",groups = {"smoke"})
     @Story("Homepage Navigation")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that clicking the logo from any page returns user to the homepage")
@@ -129,7 +129,7 @@ public class HomeTest extends BaseTest {
         );
     }
 
-    @Test(priority = 8, description = "Verify navigation to Books category page works")
+    @Test(priority = 8, description = "Verify navigation to Books category page works",groups = {"smoke"})
     @Story("Category Navigation")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify navigation to Books category page displays correct URL")
@@ -143,7 +143,7 @@ public class HomeTest extends BaseTest {
                 "Expected URL to contain '/books', but got: " + url);
     }
 
-    @Test(priority = 9, description = "Verify navigation to Computers category page works")
+    @Test(priority = 9, description = "Verify navigation to Computers category page works",groups = {"smoke"})
     @Story("Category Navigation")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify navigation to Computers category page displays correct URL")
@@ -157,7 +157,7 @@ public class HomeTest extends BaseTest {
                 "Expected URL to contain '/computers', but got: " + url);
     }
 
-    @Test(priority = 10, description = "Verify navigation to Electronics category page works")
+    @Test(priority = 10, description = "Verify navigation to Electronics category page works",groups = {"smoke"})
     @Story("Category Navigation")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify navigation to Electronics category page displays correct URL")
@@ -171,7 +171,7 @@ public class HomeTest extends BaseTest {
                 "Expected URL to contain '/electronics', but got: " + url);
     }
 
-    @Test(priority = 11, description = "Verify logout functionality works")
+    @Test(priority = 11, description = "Verify logout functionality works",groups = {"smoke"})
     @Story("User Authentication")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that logged-in users can successfully logout and session is terminated properly")

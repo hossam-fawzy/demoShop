@@ -15,7 +15,7 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                bat "mvn test -Dgroups=smoke"
+                bat "mvn clean test"
             }
         }
 

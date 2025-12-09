@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="DemoWebShop_CI" verbose="2" parallel="tests" thread-count="2" data-provider-thread-count="2">
+<suite name="DemoWebShop_CI" >
 
     <!-- Listeners for Allure and custom logging -->
     <listeners>
@@ -14,11 +14,6 @@
     <!-- Runs first for fast CI feedback -->
     <!-- ============================= -->
     <test name="SmokeTests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="smoke"/>
-            </run>
-        </groups>
         <classes>
             <class name="tests.HomeTest"/>
 
@@ -63,40 +58,40 @@
     <!-- REGRESSION TESTS (Full coverage) -->
     <!-- Can run in parallel in CI -->
     <!-- ============================= -->
-    <test name="RegressionTests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="regression"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.LoginTest"/>
-            <class name="tests.HomeTest"/>
-            <class name="tests.RegistrationTest"/>
-            <class name="tests.PDPTest"/>
-            <class name="tests.CartTest"/>
-            <class name="tests.CheckoutTest"/>
-        </classes>
-    </test>
+<!--    <test name="RegressionTests" preserve-order="true">-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="regression"/>-->
+<!--            </run>-->
+<!--        </groups>-->
+<!--        <classes>-->
+<!--            <class name="tests.LoginTest"/>-->
+<!--            <class name="tests.HomeTest"/>-->
+<!--            <class name="tests.RegistrationTest"/>-->
+<!--            <class name="tests.PDPTest"/>-->
+<!--            <class name="tests.CartTest"/>-->
+<!--            <class name="tests.CheckoutTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
     <!-- ============================= -->
     <!-- E2E TESTS (Full workflows) -->
     <!-- Run last in CI/CD -->
     <!-- ============================= -->
-    <test name="E2ETests" preserve-order="true">
-        <groups>
-            <run>
-                <include name="e2e"/>
-            </run>
-        </groups>
-        <classes>
-            <class name="tests.LoginTest">
-                <methods>
-                    <include name="completeLoginLogoutFlowTest"/>
-                </methods>
-            </class>
-            <class name="tests.CheckoutTest"/>
-        </classes>
-    </test>
+<!--    <test name="E2ETests" preserve-order="true">-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="e2e"/>-->
+<!--            </run>-->
+<!--        </groups>-->
+<!--        <classes>-->
+<!--            <class name="tests.LoginTest">-->
+<!--                <methods>-->
+<!--                    <include name="completeLoginLogoutFlowTest"/>-->
+<!--                </methods>-->
+<!--            </class>-->
+<!--            <class name="tests.CheckoutTest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
 
 </suite>
