@@ -19,19 +19,6 @@ pipeline {
             }
         }
 
-        stage('JaCoCo Coverage') {
-            steps {
-                // Generate JaCoCo report
-                bat "mvn jacoco:report"
-            }
-            post {
-                always {
-                    // Archive JaCoCo report HTML files
-                    archiveArtifacts artifacts: 'target/site/jacoco/**/*', allowEmptyArchive: true
-                }
-            }
-        }
-
         stage('Allure Report') {
             steps {
                 allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
@@ -40,6 +27,7 @@ pipeline {
     }
 
     post {
+
         success {
             withCredentials([string(credentialsId: 'slack-webhook', variable: 'SLACK_WEBHOOK')]) {
                 powershell """
