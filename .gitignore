@@ -44,7 +44,14 @@ allure-report/
 .DS_Store
 Thumbs.db
 
+# JaCoCo Coverage Reports
+target/jacoco.exec
+target/jacoco-merged.exec
+target/site/jacoco/
+*.exec
 
+# Coverage data
+jacoco*.exec
 
 ### Eclipse ###
 .apt_generated
