@@ -9,6 +9,18 @@
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
+<!--    <test name="SmokeTests">-->
+<!--        <groups>-->
+<!--            <run>-->
+<!--                <include name="smoke"/>-->
+<!--            </run>-->
+<!--        </groups>-->
+<!--        <packages>-->
+<!--            <package name="tests"/>-->
+<!--        </packages>-->
+<!--    </test>-->
+
+
     <!-- ============================= -->
     <!-- SMOKE TESTS (Critical path) -->
     <!-- Runs first for fast CI feedback -->
@@ -54,25 +66,40 @@
         </classes>
     </test>
 
+
+    <!-- API Tests -->
+<!--    <test name="API Tests - REST Assured">-->
+<!--        <classes>-->
+<!--            <class name="api.tests.SampleAPITest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+
+<!--    &lt;!&ndash; Hybrid Tests &ndash;&gt;-->
+<!--    <test name="Hybrid Tests - UI + API">-->
+<!--        <classes>-->
+<!--            <class name="tests.HybridUIAPITest"/>-->
+<!--        </classes>-->
+<!--    </test>-->
+
     <!-- ============================= -->
     <!-- REGRESSION TESTS (Full coverage) -->
     <!-- Can run in parallel in CI -->
     <!-- ============================= -->
-<!--    <test name="RegressionTests" preserve-order="true">-->
-<!--        <groups>-->
-<!--            <run>-->
-<!--                <include name="regression"/>-->
-<!--            </run>-->
-<!--        </groups>-->
-<!--        <classes>-->
-<!--            <class name="tests.LoginTest"/>-->
-<!--            <class name="tests.HomeTest"/>-->
-<!--            <class name="tests.RegistrationTest"/>-->
-<!--            <class name="tests.PDPTest"/>-->
-<!--            <class name="tests.CartTest"/>-->
-<!--            <class name="tests.CheckoutTest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <test name="RegressionTests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="regression"/>
+            </run>
+        </groups>
+        <classes>
+            <class name="tests.LoginTest"/>
+            <class name="tests.HomeTest"/>
+            <class name="tests.RegistrationTest"/>
+            <class name="tests.PDPTest"/>
+            <class name="tests.CartTest"/>
+            <class name="tests.CheckoutTest"/>
+        </classes>
+    </test>
 
     <!-- ============================= -->
     <!-- E2E TESTS (Full workflows) -->
