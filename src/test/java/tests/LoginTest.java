@@ -1,7 +1,6 @@
 package tests;
 
 import base.BaseTest;
-import drivers.DriverFactory;
 import io.qameta.allure.*;
 import models.LoginData;
 import org.slf4j.Logger;
@@ -12,8 +11,10 @@ import org.testng.annotations.Test;
 import pages.HomePage;
 import pages.LoginPage;
 import utils.ConfigReader;
-import utils.JsonDataProvider;
+import utils.ConfigReader;
+import utils.JsonDataReader;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,16 +97,17 @@ public class LoginTest extends BaseTest {
             priority = 1,  // ADDED: Run first (most critical test)
             description = "Verify user can login with valid credentials",
             groups = {"smoke", "regression", "authentication"},
-            retryAnalyzer = listeners.RetryAnalyzer.class
+            retryAnalyzer = listeners.RetryAnalyzer.class,
+            dataProvider = "validLogins"
     )
     @Description("This test verifies that a registered user can successfully login using valid email and password credentials")
     @Severity(SeverityLevel.BLOCKER)
     @Story("User Login - Happy Path")
     @TmsLink("TC-LOGIN-001")
     @Issue("AUTH-123")  // ADDED: Link to related bug/story
-    public void validLoginTest() {
+    public void validLoginTest(LoginData loginData) {
 
-        logger.info("🧪 Starting Test: Valid Login with correct credentials");
+        logger.info("🧪 Starting Test: Valid Login - " + loginData.getTestCase());
 
         Allure.step("Step 1: Navigate to Login page", () -> {
             logger.debug("Navigating to login page...");
@@ -126,11 +128,12 @@ public class LoginTest extends BaseTest {
             Assert.assertTrue(loginPage.isLoginButtonVisible(),
                     "Login page should be loaded before entering credentials");
 
-            // BEST PRACTICE: Get credentials from config
-            String email = ConfigReader.get(VALID_EMAIL_KEY);
-            String password = ConfigReader.get(VALID_PASSWORD_KEY);
+            // BEST PRACTICE: Get credentials from data object
+            String email = loginData.getEmail();
+            String password = loginData.getPassword();
 
             // SECURITY: Log email but mask password
+            Allure.parameter("Test Case", loginData.getTestCase());
             Allure.parameter("Email Used", email);
             Allure.parameter("Password Used", "***MASKED***");
             logger.debug("Logging in with email: {}", email);
@@ -184,9 +187,10 @@ public class LoginTest extends BaseTest {
         logger.debug("📊 Loading login test data from JSON...");
         
         try {
-            List<LoginData> loginDataList = JsonDataProvider.loadLoginData("testdata/login_data.json");
+            String dataFilePath = "src/test/resources/testdata/login_data.json";
+            List<LoginData> loginDataList = JsonDataReader.readData(dataFilePath, LoginData.class);
             logger.info("✅ Loaded {} login test scenarios from JSON", loginDataList.size());
-            return JsonDataProvider.toDataProviderArray(loginDataList);
+            return JsonDataReader.getData(dataFilePath, LoginData.class);
         } catch (Exception e) {
             logger.error("❌ Failed to load login data from JSON", e);
             throw new RuntimeException("Failed to load login test data", e);
@@ -204,13 +208,20 @@ public class LoginTest extends BaseTest {
         logger.debug("📊 Loading invalid login test data...");
         
         try {
-            List<LoginData> allLoginData = JsonDataProvider.loadLoginData("testdata/login_data.json");
+            String dataFilePath = "src/test/resources/testdata/login_data.json";
+            List<LoginData> allLoginData = JsonDataReader.readData(dataFilePath, LoginData.class);
             List<LoginData> invalidLogins = allLoginData.stream()
                     .filter(LoginData::isFailureExpected)
                     .collect(Collectors.toList());
             
             logger.info("✅ Loaded {} invalid login scenarios from JSON", invalidLogins.size());
-            return JsonDataProvider.toDataProviderArray(invalidLogins);
+            
+            // Convert List to Object[][]
+            Object[][] dataArray = new Object[invalidLogins.size()][1];
+            for (int i = 0; i < invalidLogins.size(); i++) {
+                dataArray[i][0] = invalidLogins.get(i);
+            }
+            return dataArray;
         } catch (Exception e) {
             logger.error("❌ Failed to load invalid login data from JSON", e);
             throw new RuntimeException("Failed to load invalid login test data", e);
@@ -228,13 +239,20 @@ public class LoginTest extends BaseTest {
         logger.debug("📊 Loading valid login test data...");
         
         try {
-            List<LoginData> allLoginData = JsonDataProvider.loadLoginData("testdata/login_data.json");
+            String dataFilePath = "src/test/resources/testdata/login_data.json";
+            List<LoginData> allLoginData = JsonDataReader.readData(dataFilePath, LoginData.class);
             List<LoginData> validLogins = allLoginData.stream()
                     .filter(LoginData::isSuccessExpected)
                     .collect(Collectors.toList());
             
             logger.info("✅ Loaded {} valid login scenarios from JSON", validLogins.size());
-            return JsonDataProvider.toDataProviderArray(validLogins);
+            
+            // Convert List to Object[][]
+            Object[][] dataArray = new Object[validLogins.size()][1];
+            for (int i = 0; i < validLogins.size(); i++) {
+                dataArray[i][0] = validLogins.get(i);
+            }
+            return dataArray;
         } catch (Exception e) {
             logger.error("❌ Failed to load valid login data from JSON", e);
             throw new RuntimeException("Failed to load valid login test data", e);

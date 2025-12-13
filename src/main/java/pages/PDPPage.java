@@ -33,7 +33,7 @@ public class PDPPage extends BasePage {
     private final By addToCartSuccessMessage = By.xpath("//p[@class='content']");
     private final By notificationBar = By.xpath("//div[@id='bar-notification']");
     private final By closeNotificationButton = By.xpath("//span[@class='close']");
-    private final By shoppingCartLinkInNotification = By.xpath("//a[normalize-space()='shopping cart']");
+    private final By shoppingCartLinkInNotification = By.xpath("//div[@id='bar-notification']//a");
 
     // Additional Locators
     private final By productRating = By.xpath("//div[@class='product-review-box']");
@@ -180,7 +180,7 @@ public class PDPPage extends BasePage {
 
     @Step("Click shopping cart link in notification")
     public void clickShoppingCartInNotification() {
-        click(shoppingCartLinkInNotification);
+        clickUsingJS(shoppingCartLinkInNotification);
     }
 
     @Step("Wait for notification bar to appear")

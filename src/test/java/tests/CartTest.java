@@ -15,9 +15,18 @@ import pages.PDPPage;
 public class CartTest extends BaseTest {
 
     private static final String BOOK_PRODUCT_URL = "https://demowebshop.tricentis.com/computing-and-internet";
+    private models.CartData cartData;
 
     @BeforeMethod
     public void addItemToCart() {
+        // Load test data
+        try {
+            java.util.List<models.CartData> dataList = utils.JsonDataReader.readData("src/test/resources/testdata/cart_data.json", models.CartData.class);
+            this.cartData = dataList.get(0);
+        } catch (java.io.IOException e) {
+             throw new RuntimeException("Failed to load cart data", e);
+        }
+
         DriverFactory.getDriver().get(BOOK_PRODUCT_URL);
         PDPPage pdpPage = new PDPPage(DriverFactory.getDriver());
         pdpPage.clickAddToCart();
@@ -26,7 +35,7 @@ public class CartTest extends BaseTest {
         DriverFactory.getDriver().get("https://demowebshop.tricentis.com/cart");
     }
 
-    @Test(priority = 1, description = "Verify cart page loads and all main elements are visible")
+    @Test(priority = 1, description = "Verify cart page loads and all main elements are visible", groups = {"smoke", "ui", "cart", "critical"})
     @Story("Cart Page UI")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that shopping cart page loads successfully with all essential elements visible including buttons, checkboxes, and totals")
@@ -53,7 +62,7 @@ public class CartTest extends BaseTest {
                 "Terms of service checkbox should be visible");
     }
 
-    @Test(priority = 2, description = "Verify cart is not empty after adding product")
+    @Test(priority = 2, description = "Verify cart is not empty after adding product", groups = {"smoke", "regression", "ui", "cart", "positive"})
     @Story("Cart Content Management")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that cart contains items after adding a product and cart table is displayed correctly")
@@ -70,7 +79,7 @@ public class CartTest extends BaseTest {
                 "Cart should have items based on combined validation");
     }
 
-    @Test(priority = 3, description = "Verify product information is displayed in cart")
+    @Test(priority = 3, description = "Verify product information is displayed in cart", groups = {"smoke", "regression", "ui", "cart", "positive"})
     @Story("Cart Product Display")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that all product information (name, price, quantity, subtotal) is displayed correctly in the cart")
@@ -106,7 +115,7 @@ public class CartTest extends BaseTest {
         Allure.addAttachment("Product Subtotal", productSubtotal);
     }
 
-    @Test(priority = 4, description = "Verify cart total is displayed")
+    @Test(priority = 4, description = "Verify cart total is displayed", groups = {"smoke", "regression", "ui", "cart", "critical"})
     @Story("Cart Totals")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that cart total is displayed correctly and contains valid numeric values")
@@ -131,7 +140,7 @@ public class CartTest extends BaseTest {
         Allure.addAttachment("Cart Total", cartTotal);
     }
 
-    @Test(priority = 5, description = "Verify quantity can be updated")
+    @Test(priority = 5, description = "Verify quantity can be updated", groups = {"regression", "ui", "cart", "positive"})
     @Story("Cart Quantity Management")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that users can update product quantity in cart and changes are reflected correctly")
@@ -158,7 +167,7 @@ public class CartTest extends BaseTest {
         Allure.addAttachment("Updated Quantity", updatedQuantity);
     }
 
-    @Test(priority = 6, description = "Verify subtotal updates when quantity changes")
+    @Test(priority = 6, description = "Verify subtotal updates when quantity changes", groups = {"regression", "ui", "cart", "critical"})
     @Story("Cart Calculations")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that product subtotal is recalculated correctly when quantity is changed")
@@ -187,7 +196,7 @@ public class CartTest extends BaseTest {
         Allure.addAttachment("New Subtotal (Qty 2)", newSubtotal);
     }
 
-    @Test(priority = 7, description = "Verify remove checkbox can be checked")
+    @Test(priority = 7, description = "Verify remove checkbox can be checked", groups = {"regression", "ui", "cart"})
     @Story("Cart Item Removal")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that remove checkbox can be selected for products in the cart")
@@ -203,7 +212,7 @@ public class CartTest extends BaseTest {
                 "Remove checkbox should be checked after clicking");
     }
 
-    @Test(priority = 8, description = "Verify product can be removed from cart")
+    @Test(priority = 8, description = "Verify product can be removed from cart", groups = {"smoke", "regression", "ui", "cart", "critical"})
     @Story("Cart Item Removal")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that users can successfully remove products from cart and cart becomes empty")
@@ -224,7 +233,7 @@ public class CartTest extends BaseTest {
                 "Cart should not have items after removal");
     }
 
-    @Test(priority = 9, description = "Verify Terms of Service checkbox can be checked")
+    @Test(priority = 9, description = "Verify Terms of Service checkbox can be checked", groups = {"smoke", "regression", "ui", "cart", "checkout", "critical"})
     @Story("Checkout Prerequisites")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that Terms of Service checkbox can be checked and unchecked as required for checkout")
@@ -248,7 +257,7 @@ public class CartTest extends BaseTest {
                 "Terms of Service checkbox should be enabled");
     }
 
-    @Test(priority = 10, description = "Verify checkout button is clickable when terms are accepted")
+    @Test(priority = 10, description = "Verify checkout button is clickable when terms are accepted", groups = {"smoke", "regression", "ui", "cart", "checkout", "e2e", "critical"})
     @Story("Checkout Flow")
     @Severity(SeverityLevel.BLOCKER)
     @Description("Verify that checkout button is displayed, enabled, and clickable for proceeding to checkout")
@@ -265,7 +274,7 @@ public class CartTest extends BaseTest {
                 "Checkout should be available for proceeding");
     }
 
-    @Test(priority = 11, description = "Verify Continue Shopping button works")
+    @Test(priority = 11, description = "Verify Continue Shopping button works", groups = {"regression", "ui", "cart", "navigation"})
     @Story("Cart Navigation")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that Continue Shopping button navigates user away from cart page")
@@ -281,7 +290,7 @@ public class CartTest extends BaseTest {
         Allure.addAttachment("Navigated URL", currentUrl);
     }
 
-    @Test(priority = 12, description = "Verify estimate shipping section is displayed")
+    @Test(priority = 12, description = "Verify estimate shipping section is displayed", groups = {"regression", "ui", "cart"})
     @Story("Shipping Estimation")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that shipping estimation section is visible on cart page")
@@ -292,7 +301,7 @@ public class CartTest extends BaseTest {
                 "Estimate shipping section should be visible on cart page");
     }
 
-    @Test(priority = 13, description = "Verify all main elements method works")
+    @Test(priority = 13, description = "Verify all main elements method works", groups = {"smoke", "regression", "ui", "cart"})
     @Story("Cart Page UI")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that bulk validation method correctly identifies when all main cart elements are visible")
@@ -303,7 +312,7 @@ public class CartTest extends BaseTest {
                 "All main cart page elements should be visible");
     }
 
-    @Test(priority = 14, description = "Verify discount code input is displayed")
+    @Test(priority = 14, description = "Verify discount code input is displayed", groups = {"regression", "ui", "cart"})
     @Story("Cart Discounts")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that discount code input field is functional and accepts user input")
@@ -313,12 +322,12 @@ public class CartTest extends BaseTest {
         Assert.assertTrue(cartPage.isDiscountCodeInputDisplayed(),
                 "Discount code input field should be displayed");
 
-        cartPage.enterDiscountCode("TEST123");
+        cartPage.enterDiscountCode(cartData.getDiscountCode());
 
-        Allure.addAttachment("Test Discount Code", "TEST123");
+        Allure.addAttachment("Test Discount Code", cartData.getDiscountCode());
     }
 
-    @Test(priority = 15, description = "Verify gift card code input is displayed")
+    @Test(priority = 15, description = "Verify gift card code input is displayed", groups = {"regression", "ui", "cart"})
     @Story("Cart Gift Cards")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that gift card code input field is functional and accepts user input")
@@ -328,25 +337,25 @@ public class CartTest extends BaseTest {
         Assert.assertTrue(cartPage.isGiftCardInputDisplayed(),
                 "Gift card input field should be displayed");
 
-        cartPage.enterGiftCardCode("GIFT123");
+        cartPage.enterGiftCardCode(cartData.getGiftCardCode());
 
-        Allure.addAttachment("Test Gift Card Code", "GIFT123");
+        Allure.addAttachment("Test Gift Card Code", cartData.getGiftCardCode());
     }
 
-    @Test(priority = 16, description = "Verify zip code can be entered for shipping estimate")
+    @Test(priority = 16, description = "Verify zip code can be entered for shipping estimate", groups = {"regression", "ui", "cart"})
     @Story("Shipping Estimation")
     @Severity(SeverityLevel.MINOR)
     @Description("Verify that zip code input field accepts user input for shipping estimation")
     public void enterZipCodeTest() {
         CartPage cartPage = new CartPage(DriverFactory.getDriver());
 
-        String testZipCode = "12345";
+        String testZipCode = cartData.getZipCode();
         cartPage.enterZipCode(testZipCode);
 
         Allure.addAttachment("Test Zip Code", testZipCode);
     }
 
-    @Test(priority = 17, description = "Verify updating quantity to zero removes item")
+    @Test(priority = 17, description = "Verify updating quantity to zero removes item", groups = {"regression", "ui", "cart", "negative"})
     @Story("Cart Item Removal")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that setting product quantity to zero effectively removes the item from cart")
@@ -363,7 +372,7 @@ public class CartTest extends BaseTest {
                 "Cart should be empty after setting quantity to 0");
     }
 
-    @Test(priority = 18, description = "Verify page URL is correct")
+    @Test(priority = 18, description = "Verify page URL is correct", groups = {"regression", "ui", "cart"})
     @Story("Cart Page UI")
     @Severity(SeverityLevel.MINOR)
     @Description("Verify that cart page URL is correct and contains expected path")
@@ -378,7 +387,7 @@ public class CartTest extends BaseTest {
         Allure.addAttachment("Cart Page URL", pageUrl);
     }
 
-    @Test(priority = 19, description = "Verify subtotal calculation is mathematically correct")
+    @Test(priority = 19, description = "Verify subtotal calculation is mathematically correct", groups = {"regression", "ui", "cart", "critical"})
     @Story("Cart Calculations")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that subtotal is calculated correctly as price × quantity")
@@ -399,7 +408,7 @@ public class CartTest extends BaseTest {
         Allure.addAttachment("Calculated Subtotal", subtotal);
     }
 
-    @Test(priority = 20, description = "Verify product exists in cart by name")
+    @Test(priority = 20, description = "Verify product exists in cart by name", groups = {"regression", "ui", "cart"})
     @Story("Cart Product Verification")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that specific product can be found in cart by name")
@@ -413,7 +422,7 @@ public class CartTest extends BaseTest {
                 "Expected product '" + expectedProductName + "' should exist in cart");
     }
 
-    @Test(priority = 21, description = "Verify all cart functionalities are available")
+    @Test(priority = 21, description = "Verify all cart functionalities are available", groups = {"regression", "ui", "cart"})
     @Story("Cart Page UI")
     @Severity(SeverityLevel.NORMAL)
     @Description("Verify that all cart functionality elements (update, checkout, discounts, gift cards) are present")
@@ -424,7 +433,7 @@ public class CartTest extends BaseTest {
                 "All cart functionality elements should be available on the page");
     }
 
-    @Test(priority = 22, description = "Verify cart page loads completely")
+    @Test(priority = 22, description = "Verify cart page loads completely", groups = {"smoke", "regression", "ui", "cart", "critical"})
     @Story("Cart Page UI")
     @Severity(SeverityLevel.CRITICAL)
     @Description("Verify that cart page waits for all elements to load before allowing user interaction")

@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 
-<suite name="DemoWebShop_CI" >
+<!--
+    DemoWebShop Test Suite
+    Organized by test groups for flexible execution
+    
+    Run specific groups:
+    - mvn test -Dgroups=smoke
+    - mvn test -Dgroups=regression
+    - mvn test -Dgroups="smoke,critical"
+    - mvn test -Dgroups=ui -DexcludedGroups=slow
+-->
+
+<suite name="DemoWebShop Test Suite" verbose="1">
 
     <!-- Listeners for Allure and custom logging -->
     <listeners>
@@ -9,116 +20,127 @@
         <listener class-name="listeners.TestListener"/>
     </listeners>
 
-<!--    <test name="SmokeTests">-->
-<!--        <groups>-->
-<!--            <run>-->
-<!--                <include name="smoke"/>-->
-<!--            </run>-->
-<!--        </groups>-->
-<!--        <packages>-->
-<!--            <package name="tests"/>-->
-<!--        </packages>-->
-<!--    </test>-->
-
-
-    <!-- ============================= -->
-    <!-- SMOKE TESTS (Critical path) -->
-    <!-- Runs first for fast CI feedback -->
-    <!-- ============================= -->
-    <test name="SmokeTests" preserve-order="true">
-        <classes>
-            <class name="tests.HomeTest"/>
-
-            <class name="tests.LoginTest">
-                <methods>
-                    <include name="validLoginTest"/>
-                    <include name="verifyLoginPageElementsTest"/>
-                    <include name="forgotPasswordLinkTest"/>
-                    <include name="completeLoginLogoutFlowTest"/>
-                </methods>
-            </class>
-
-            <class name="tests.RegistrationTest">
-                <methods>
-                    <include name="verifyRegistrationPageElementsTest"/>
-                    <include name="successfulRegistrationTest"/>
-                    <include name="registrationWithEmptyFieldsTest"/>
-                    <include name="registrationWithInvalidEmailTest"/>
-                </methods>
-            </class>
-
-            <class name="tests.PDPTest">
-                <methods>
-                    <include name="verifyProductInformationTest"/>
-                    <include name="verifyDefaultQuantityTest"/>
-                    <include name="setQuantityDirectlyTest"/>
-                </methods>
-            </class>
-
-            <class name="tests.CartTest">
-                <methods>
-                    <include name="verifyProductInformationTest"/>
-                    <include name="verifyDefaultQuantityTest"/>
-                    <include name="setQuantityDirectlyTest"/>
-                </methods>
-            </class>
-
-        </classes>
+    <!-- ============================================ -->
+    <!-- SMOKE TESTS - Critical Path (5-10 minutes)  -->
+    <!-- Run after every code change, before commits  -->
+    <!-- ============================================ -->
+    <test name="Smoke Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="smoke"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="tests"/>
+            <package name="api.tests"/>
+        </packages>
     </test>
 
+    <!-- ============================================ -->
+    <!-- UI TESTS - Browser Automation (20-30 min)   -->
+    <!-- Run before releases, nightly builds          -->
+    <!-- ============================================ -->
+    <test name="UI Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="ui"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="tests"/>
+        </packages>
+    </test>
 
-    <!-- API Tests -->
-<!--    <test name="API Tests - REST Assured">-->
-<!--        <classes>-->
-<!--            <class name="api.tests.SampleAPITest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
+    <!-- ============================================ -->
+    <!-- API TESTS - REST Assured (5-10 minutes)      -->
+    <!-- Run after API changes                        -->
+    <!-- ============================================ -->
+    <test name="API Tests">
+        <groups>
+            <run>
+                <include name="api"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="api.tests"/>
+        </packages>
+    </test>
 
-<!--    &lt;!&ndash; Hybrid Tests &ndash;&gt;-->
-<!--    <test name="Hybrid Tests - UI + API">-->
-<!--        <classes>-->
-<!--            <class name="tests.HybridUIAPITest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
-
-    <!-- ============================= -->
-    <!-- REGRESSION TESTS (Full coverage) -->
-    <!-- Can run in parallel in CI -->
-    <!-- ============================= -->
-    <test name="RegressionTests" preserve-order="true">
+    <!-- ============================================ -->
+    <!-- REGRESSION TESTS - Full Suite (40-60 min)   -->
+    <!-- Run nightly, before major releases           -->
+    <!-- ============================================ -->
+    <test name="Regression Tests" parallel="classes" thread-count="2">
         <groups>
             <run>
                 <include name="regression"/>
             </run>
         </groups>
+        <packages>
+            <package name="tests"/>
+            <package name="api.tests"/>
+        </packages>
+    </test>
+
+    <!-- ============================================ -->
+    <!-- CRITICAL TESTS - P0 Only (10-15 minutes)     -->
+    <!-- Run before production deployments            -->
+    <!-- ============================================ -->
+    <test name="Critical Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="critical"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="tests"/>
+            <package name="api.tests"/>
+        </packages>
+    </test>
+
+    <!-- ============================================ -->
+    <!-- E2E TESTS - Full Workflows (15-20 minutes)   -->
+    <!-- Run before releases for integration testing  -->
+    <!-- ============================================ -->
+    <test name="E2E Tests" preserve-order="true">
+        <groups>
+            <run>
+                <include name="e2e"/>
+            </run>
+        </groups>
+        <packages>
+            <package name="tests"/>
+        </packages>
+    </test>
+
+    <!-- ============================================ -->
+    <!-- FEATURE SPECIFIC - Login Tests               -->
+    <!-- ============================================ -->
+    <test name="Login Feature Tests">
+        <groups>
+            <run>
+                <include name="login"/>
+            </run>
+        </groups>
         <classes>
             <class name="tests.LoginTest"/>
-            <class name="tests.HomeTest"/>
-            <class name="tests.RegistrationTest"/>
-            <class name="tests.PDPTest"/>
+        </classes>
+    </test>
+
+    <!-- ============================================ -->
+    <!-- FEATURE SPECIFIC - Cart & Checkout Tests    -->
+    <!-- ============================================ -->
+    <test name="Cart and Checkout Tests">
+        <groups>
+            <run>
+                <include name="cart"/>
+                <include name="checkout"/>
+            </run>
+        </groups>
+        <classes>
             <class name="tests.CartTest"/>
             <class name="tests.CheckoutTest"/>
         </classes>
     </test>
-
-    <!-- ============================= -->
-    <!-- E2E TESTS (Full workflows) -->
-    <!-- Run last in CI/CD -->
-    <!-- ============================= -->
-<!--    <test name="E2ETests" preserve-order="true">-->
-<!--        <groups>-->
-<!--            <run>-->
-<!--                <include name="e2e"/>-->
-<!--            </run>-->
-<!--        </groups>-->
-<!--        <classes>-->
-<!--            <class name="tests.LoginTest">-->
-<!--                <methods>-->
-<!--                    <include name="completeLoginLogoutFlowTest"/>-->
-<!--                </methods>-->
-<!--            </class>-->
-<!--            <class name="tests.CheckoutTest"/>-->
-<!--        </classes>-->
-<!--    </test>-->
 
 </suite>

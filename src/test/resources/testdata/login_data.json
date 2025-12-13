@@ -1,62 +1,57 @@
 [
   {
     "testCase": "Valid Login - User 1",
-    "email": "testuser@example.com",
-    "password": "ValidPass123",
+    "email": "hossamfawzy553@gmail.com",
+    "password": "01159763964Hho#",
     "expectedResult": "success"
   },
-  {
-    "testCase": "Valid Login - User 2",
-    "email": "valid@test.com",
-    "password": "Test123",
-    "expectedResult": "success"
-  },
+
   {
     "testCase": "Invalid Password",
     "email": "invalid@test.com",
     "password": "WrongPass",
-    "expectedResult": "failure"
+    "expectedResult": "Login was unsuccessful"
   },
   {
     "testCase": "Non-existent Email",
     "email": "wrongemail@test.com",
     "password": "Password123",
-    "expectedResult": "failure"
+    "expectedResult": "Login was unsuccessful"
   },
   {
     "testCase": "Empty Email Field",
     "email": "",
     "password": "password123",
-    "expectedResult": "failure"
+    "expectedResult": "Login was unsuccessful"
   },
   {
     "testCase": "Empty Password Field",
     "email": "user@test.com",
     "password": "",
-    "expectedResult": "failure"
+    "expectedResult": "Login was unsuccessful"
   },
   {
     "testCase": "Both Fields Empty",
     "email": "",
     "password": "",
-    "expectedResult": "failure"
+    "expectedResult": "Login was unsuccessful"
   },
   {
     "testCase": "Invalid Email Format - No @",
     "email": "invalidemail",
     "password": "Pass123",
-    "expectedResult": "failure"
+    "expectedResult": "Login was unsuccessful"
   },
   {
     "testCase": "Special Characters Password",
     "email": "test@example.com",
     "password": "!@#$%^&*()",
-    "expectedResult": "failure"
+    "expectedResult": "Login was unsuccessful"
   },
   {
     "testCase": "SQL Injection Attempt - Email",
     "email": "' OR '1'='1",
     "password": "password",
-    "expectedResult": "failure"
+    "expectedResult": "Login was unsuccessful"
   }
 ]
